@@ -6,9 +6,6 @@
 typedef struct EnvItem {
     Rectangle rect;
     int blocking;
-    Color color;
 } EnvItem;
-
-void DetectarColisao();
 
 #endif
