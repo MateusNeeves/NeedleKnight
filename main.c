@@ -21,7 +21,7 @@ int main(void){
     EnvItem envItems[] = {
         {{0, 350, 540, 210}, 1}, // Plataforma Cima-Esquerda
         {{0, 0, 1920, 100}, 1}, //Teto
-        {{0, 936, 1920, 140}, 1}, //Chao Baixo
+        {{0, 936, 1920, 140}, 1}, //Chao Baixo //
         {{1410, 545, 510, 225}, 1}, // Plataforma Direita-Cima
         {{780, 550, 215, 40}, 1}, // Plataforma Meio-Esquerda
         {{1060, 720, 170, 50}, 1}, // Plataforma Meio-Direita
@@ -40,7 +40,7 @@ int main(void){
 
     Texture2D jogadorStandRight = LoadTexture("assets\\Personagem\\StandRight.png");
 
-    Texture2D mapa1 = LoadTexture("assets\\Mapa\\1mapa.png");
+    Texture2D mapaInicio = LoadTexture("assets\\Mapa\\MapaInicio.png");
 
     Texture2D *WhichTexture;
     *WhichTexture = jogadorStandLeft;
@@ -82,14 +82,14 @@ int main(void){
 
             ClearBackground(LIGHTGRAY);
 
-                Rectangle fundo = {0 , 0, mapa1.width , mapa1.height };
+                Rectangle fundo = {0 , 0, mapaInicio.width , mapaInicio.height };
 
                 Vector2 posFundo = {0, 0};
                 
-                DrawTextureRec(mapa1, fundo, posFundo, WHITE);
+                DrawTextureRec(mapaInicio, fundo, posFundo, WHITE);
 
-             /*      for (int i = 0; i < envItemsLength; i++)
-                    DrawRectangleRec(envItems[i].rect, GRAY);    */
+      /*           for (int i = 0; i < envItemsLength; i++)
+                    DrawRectangleRec(envItems[i].rect, GRAY);   */
 
                 Rectangle playerRect = {FrameWidth * CurrentFrame , 0, FrameWidth , WhichTexture->height };
                 
@@ -105,7 +105,7 @@ int main(void){
     UnloadTexture(jogadorRunRight);
     UnloadTexture(jogadorStandLeft);
     UnloadTexture(jogadorStandRight);
-    UnloadTexture(mapa1);
+    UnloadTexture(mapaInicio);
 
     CloseWindow();
 }

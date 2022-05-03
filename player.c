@@ -48,8 +48,7 @@ void UpdatePlayer(Player *player, EnvItem *envItems, int envItemsLength, float d
     }
     
     int hitObstacle = 0;
-    for (int i = 0; i < envItemsLength; i++)
-    {
+    for (int i = 0; i < envItemsLength; i++){
         EnvItem *ei = envItems + i;
         Vector2 *p = &(player->position);
          if (ei->blocking &&
@@ -71,6 +70,28 @@ void UpdatePlayer(Player *player, EnvItem *envItems, int envItemsLength, float d
         {
             player->speed = 0.0f;
             p->y = ei->rect.y + ei->rect.height + (*Texture)->height;
+        }
+
+        if (*LastSide == Left && 
+            ei->rect.x + ei->rect.width <= p->x - (*FrameWidth)/3 + PlayerHorzSpeed * delta &&
+            ei->rect.x + ei->rect.width > p->x - (*FrameWidth)/3 &&
+            ((p->y > ei->rect.y && p->y - (*Texture)->height < ei->rect.y) || // Metade-Cima Retangulo
+            (p->y - (*Texture)->height > ei->rect.y && p->y < ei->rect.y + ei->rect.height) || // Todo Entre-Retangulo
+            (p->y - (*Texture)->height < ei->rect.y + ei->rect.height && p->y > ei->rect.y + ei->rect.height))) // Metade-Baixo Retangulo
+        {
+
+                p->x += PlayerHorzSpeed * delta;
+
+        }
+
+        else if (*LastSide == Right && 
+            ei->rect.x >= p->x + (*FrameWidth)/4 - PlayerHorzSpeed * delta &&
+            ei->rect.x < p->x + (*FrameWidth)/4 &&
+            ((p->y > ei->rect.y && p->y - (*Texture)->height < ei->rect.y) || // Metade-Cima Retangulo
+            (p->y - (*Texture)->height > ei->rect.y && p->y < ei->rect.y + ei->rect.height) || // Todo Entre-Retangulo
+            (p->y - (*Texture)->height < ei->rect.y + ei->rect.height && p->y > ei->rect.y + ei->rect.height))) // Metade-Baixo Retangulo
+        {
+            p->x -= PlayerHorzSpeed * delta;
         } 
     }
 
