@@ -42,6 +42,7 @@ int main(void){
 
     Texture2D mapaInicio = LoadTexture("assets\\Mapa\\MapaInicio.png");
 
+
     Texture2D *WhichTexture;
     *WhichTexture = jogadorStandLeft;
 
@@ -51,6 +52,7 @@ int main(void){
     int CurrentFrame = 0;
     float Timer = 0.0f;
     short LastSide = Left;
+    int colision;
 
     float deltaTime;
 
@@ -63,8 +65,14 @@ int main(void){
         deltaTime = GetFrameTime();
         LastMove = WhichTexture;
 
-        UpdatePlayer(&player, envItems, envItemsLength, deltaTime, &WhichTexture, jogadorRunLeft, jogadorRunRight, 
+        MovePlayer(&player, deltaTime, &WhichTexture, jogadorRunLeft, jogadorRunRight, 
                     jogadorStandLeft, jogadorStandRight, &FrameWidth, &MaxFrames, &LastSide);
+
+        ColisaoSupInf(&player, envItems, envItemsLength, &WhichTexture, deltaTime, &colision);
+
+        ColisaoLateral(&player, envItems, envItemsLength, &WhichTexture, deltaTime, &FrameWidth, &LastSide);
+
+        HitObstacle(&player, deltaTime, colision);
 
         if (LastMove != WhichTexture)
             CurrentFrame = 0;
@@ -91,11 +99,12 @@ int main(void){
       /*           for (int i = 0; i < envItemsLength; i++)
                     DrawRectangleRec(envItems[i].rect, GRAY);   */
 
-                Rectangle playerRect = {FrameWidth * CurrentFrame , 0, FrameWidth , WhichTexture->height };
+                Rectangle textureRec = {FrameWidth * CurrentFrame , 0, FrameWidth , WhichTexture->height};
                 
-                Vector2 positionRec = {player.position.x - (FrameWidth/2), player.position.y - WhichTexture->height};
+                Vector2 position = {player.position.x - (FrameWidth/2), player.position.y - WhichTexture->height};
 
-                DrawTextureRec(*WhichTexture, playerRect, positionRec, WHITE);
+                DrawTextureRec(*WhichTexture, textureRec, position, WHITE);
+
 
         EndDrawing();
         //----------------------------------------------------------------------------------
