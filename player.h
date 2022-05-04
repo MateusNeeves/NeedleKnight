@@ -7,9 +7,17 @@ typedef struct Player {
     Vector2 position;
     float speed;
     bool canJump;
+
+    Texture2D PlayerTextures[4];
+    Texture2D CurrentTexture;
+    float FrameWidth;
+    int MaxFrames;
+    int CurrentFrame;
+    int LastSide;
 } Player;
 
-void MovePlayer(Player *player, float delta, Texture2D **Texture, Texture2D jogadorRunLeft, Texture2D jogadorRunRight, 
-                  Texture2D jogadorStandLeft, Texture2D jogadorStandRight, float *FrameWidth, int *MaxFrames, short *LastSide);
+void CreatePlayer(Player *player);
+
+void MovePlayer(Player *player, float delta);
 
 #endif
