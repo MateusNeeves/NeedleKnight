@@ -1,8 +1,7 @@
 #include "raylib.h"
 #include "player.h"
 
-#define G 2150
-#define PlayerJumpSpeed 970.0f //1500
+#define PlayerJumpSpeed 1050.0f //1050
 #define PlayerHorzSpeed 400.0f
 #define Right 1
 #define Left 0
@@ -33,15 +32,15 @@ void MovePlayer(Player *player, float delta, Texture2D **Texture, Texture2D joga
     }
 
     if (IsKeyUp(KEY_A) && IsKeyUp(KEY_D) && player->canJump){
-        if (*LastSide == Left){
-            *(*Texture) = jogadorStandLeft;
-            *FrameWidth = jogadorStandLeft.width / 6.0;
-            *MaxFrames = (int) (jogadorStandLeft.width / (int) * FrameWidth);
-        }
-        else{
+        if (*LastSide == Right){
             *(*Texture) = jogadorStandRight;
             *FrameWidth = jogadorStandRight.width / 6.0;
             *MaxFrames = (int) (jogadorStandRight.width / (int) * FrameWidth);
+        }
+        else{
+            *(*Texture) = jogadorStandLeft;
+            *FrameWidth = jogadorStandLeft.width / 6.0;
+            *MaxFrames = (int) (jogadorStandLeft.width / (int) * FrameWidth);
         }
     }
 }

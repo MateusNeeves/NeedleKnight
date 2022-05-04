@@ -2,8 +2,7 @@
 #include "colision.h"
 #include "player.h"
 
-#define G 2150
-#define PlayerJumpSpeed 970.0f //1500
+#define G 2500 // 2500
 #define PlayerHorzSpeed 400.0f
 #define Right 1
 #define Left 0

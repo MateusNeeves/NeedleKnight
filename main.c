@@ -1,12 +1,7 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include "raylib.h"
 #include "player.h"
 #include "colision.h"
-
-#define G 2150
-#define Right 1
-#define Left 0
 
 int main(void){
 
@@ -44,14 +39,12 @@ int main(void){
 
 
     Texture2D *WhichTexture;
-    *WhichTexture = jogadorStandLeft;
-
     Texture2D *LastMove;
     float FrameWidth;
     int MaxFrames;
     int CurrentFrame = 0;
     float Timer = 0.0f;
-    short LastSide = Left;
+    short LastSide;
     int colision;
 
     float deltaTime;
@@ -104,6 +97,8 @@ int main(void){
                 Vector2 position = {player.position.x - (FrameWidth/2), player.position.y - WhichTexture->height};
 
                 DrawTextureRec(*WhichTexture, textureRec, position, WHITE);
+
+                
 
 
         EndDrawing();
