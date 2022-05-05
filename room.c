@@ -5,11 +5,14 @@
 void CreateRooms(Room **rooms){
 
     (*rooms)[0].textureRoom = LoadTexture("assets/Mapa/MapaInicio.png");
-    
-    (*rooms)[0].platformNmbr = 8;
 
-    Rectangle platforms[8] = {
-        {0, 350, 540, 210},        // Plataforma Cima-Esquerda
+    (*rooms)[0].FrontTextureRoom = LoadTexture("assets/Mapa/MapaInicioFrente.png");
+    
+    (*rooms)[0].platformNmbr = 9;
+
+    Rectangle platforms[9] = {
+        {0, 350, 540, 210},         // Plataforma Cima-Esquerda
+        {0, 520, 150, 130},        // Plataforma Cima-Esquerda (Complemento)
         {0, 0, 1920, 100},        //Teto
         {0, 936, 1920, 140},     //Chao Baixo 
         {1410, 545, 510, 225},  // Plataforma Direita-Cima

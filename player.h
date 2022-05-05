@@ -8,7 +8,7 @@ typedef struct Player {
     float speed;
     bool canJump;
 
-    Texture2D PlayerTextures[4];
+    Texture2D PlayerTextures[6];
     Texture2D CurrentTexture;
     float FrameWidth;
     int MaxFrames;
@@ -18,6 +18,6 @@ typedef struct Player {
 
 void CreatePlayer(Player *player);
 
-void MovePlayer(Player *player, float delta);
+void MovePlayer(Player *player, float delta, int *colision);
 
 #endif

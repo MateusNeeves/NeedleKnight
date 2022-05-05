@@ -21,7 +21,7 @@ int main(void){
     
     float deltaTime;
     float Timer = 0.0f;
-    int colision; 
+    int colision = 0; 
 
 
     SetTargetFPS(60);
@@ -31,7 +31,7 @@ int main(void){
         deltaTime = GetFrameTime();
         LastMove = &player.CurrentTexture;
 
-        MovePlayer(&player, deltaTime);
+        MovePlayer(&player, deltaTime, &colision);
 
         ColisaoSupInf(&player, rooms[0], deltaTime, &colision);
 
@@ -70,16 +70,17 @@ int main(void){
 
                 DrawTextureRec(player.CurrentTexture, textureRec, position, WHITE); 
 
+                DrawTextureRec(rooms[0].FrontTextureRoom, fundo, posFundo, WHITE);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
     
-    for (int i = 0 ; i < 4 ; i++)
+    for (int i = 0 ; i < 6 ; i++)
         UnloadTexture(player.PlayerTextures[i]);
 
     UnloadTexture(rooms[0].textureRoom);
-
+    UnloadTexture(rooms[0].FrontTextureRoom);
     free(rooms[0].platforms);
     free(rooms); 
 

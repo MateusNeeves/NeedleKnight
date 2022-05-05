@@ -5,6 +5,7 @@
 
 typedef struct Room {
     Texture2D textureRoom;
+    Texture2D FrontTextureRoom;
     Rectangle *platforms;
     int platformNmbr;
 } Room;
