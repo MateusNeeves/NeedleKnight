@@ -5,6 +5,9 @@
         "colision.h": "c",
         "stdio.h": "c",
         "room.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "menu.h": "c",
+        "animacao.h": "c",
+        "hud.h": "c"
     }
 }

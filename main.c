@@ -4,12 +4,15 @@
 #include "player.h"
 #include "colision.h"
 #include "room.h"
+#include "hudmenu.h"
+#include "animacao.h"
+
 
 int main(void){
 
     InitWindow(GetScreenWidth(), GetScreenHeight(), "GAMEZIN");
-
     ToggleFullscreen();
+    SetTargetFPS(60);
 
     Player player;
     CreatePlayer(&player);
@@ -18,69 +21,71 @@ int main(void){
     CreateRooms(&rooms);
 
     Texture2D *LastMove, *CurrentMove;
-    
-    float deltaTime;
     float Timer = 0.0f;
-    int colision = 0; 
 
+    GameScreen CurrentScreen = MENU;
+    char diretorio[27];
+    
+    Menu menuInfo;
+    CreateMenuInfo(&menuInfo);
 
-    SetTargetFPS(60);
+    Hud infoHud;
+    CreateHud(&infoHud);
+
+    float counter = 0;
+
 
     while (!WindowShouldClose()){
-
-        deltaTime = GetFrameTime();
-        LastMove = &player.CurrentTexture;
-
-        MovePlayer(&player, deltaTime, &colision);
-
-        ColisaoSupInf(&player, rooms[0], deltaTime, &colision);
-
-        ColisaoLateral(&player, rooms[0], deltaTime);
-
-        HitObstacle(&player, deltaTime, colision);
-
-        CurrentMove = &player.CurrentTexture;
-
-        if (LastMove != CurrentMove)
-            player.CurrentFrame = 0;
-
-         Timer += GetFrameTime();
-
-        if (Timer >= 0.1f){
-            Timer = 0.0f;
-            player.CurrentFrame += 1;
-        }
-
-        player.CurrentFrame = player.CurrentFrame % player.MaxFrames;  
-
+        
         BeginDrawing();
 
-                Rectangle fundo = {0 , 0, rooms[0].textureRoom.width , rooms[0].textureRoom.height };
+        switch (CurrentScreen){
+            case MENU:{
 
-                Vector2 posFundo = {0, 0};
-                
-                DrawTextureRec(rooms[0].textureRoom, fundo, posFundo, WHITE);  
+                if (IsKeyPressed(KEY_ENTER))
+                    CurrentScreen = GAMEPLAY;
 
-                /* for (int i = 0; i < rooms[0].platformNmbr; i++)
-                    DrawRectangleRec(rooms[0].platforms[i], WHITE);   */ 
+                AnimMenu(&menuInfo, &Timer, diretorio);
 
-                 Rectangle textureRec = {player.FrameWidth * player.CurrentFrame , 0, player.FrameWidth , player.CurrentTexture.height};
-                
-                Vector2 position = {player.position.x - player.FrameWidth/2 , player.position.y - player.CurrentTexture.height};
+                break;
+            }
+            
+            case GAMEPLAY:{
 
-                DrawTextureRec(player.CurrentTexture, textureRec, position, WHITE); 
+                if (IsKeyPressed(KEY_ENTER))
+                    CurrentScreen = MENU;
 
-                DrawTextureRec(rooms[0].FrontTextureRoom, fundo, posFundo, WHITE);
+                DrawRoom(rooms, 1); //Printar Atras
+
+                if (player.CurrentLife > 0)
+                    AnimPlayer(&player, &LastMove, &CurrentMove, rooms, &Timer);
+                else  
+                    AnimPlayerDeath(&player, &Timer);
+
+                DrawRoom(rooms, 0); // Printar na Frente
+
+                DrawPlayerLife(player, infoHud, counter);
+
+                //for (int i = 0; i < rooms[0].platformNmbr; i++) DrawRectangleRec(rooms[0].platforms[i], WHITE);  
+
+                break;
+            }
+
+            default:
+                break;
+        }
 
         EndDrawing();
-        //----------------------------------------------------------------------------------
     }
     
-    for (int i = 0 ; i < 6 ; i++)
+    for (int i = 0 ; i < 10 ; i++)
         UnloadTexture(player.PlayerTextures[i]);
 
-    UnloadTexture(rooms[0].textureRoom);
-    UnloadTexture(rooms[0].FrontTextureRoom);
+    UnloadTexture(rooms[0].texture);
+    UnloadTexture(rooms[0].FrontTexture);
+    UnloadTexture(menuInfo.Texture);
+    UnloadTexture(infoHud.TexturePLife);
+
     free(rooms[0].platforms);
     free(rooms); 
 

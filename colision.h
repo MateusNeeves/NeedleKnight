@@ -6,10 +6,8 @@
 #include "room.h"
 
 
-void ColisaoSupInf(Player *player, Room rooms, float delta, int *colision);
+void ColisaoSupInf(Player **player, Room rooms, float delta);
 
-void ColisaoLateral(Player *player, Room rooms, float delta);
-
-void HitObstacle(Player *player, float delta, int colision);
+void ColisaoLateral(Player **player, Room rooms, float delta);
 
 #endif
