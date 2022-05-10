@@ -9,7 +9,7 @@
 
 void AnimMenu(Menu *menuInfo, float *Timer, char *diretorio);
 
-void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, Room *rooms, float *Timer);
+void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, Room rooms, float *Timer);
 
 void AnimPlayerDeath(Player *player, float *Timer);
 

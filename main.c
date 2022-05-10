@@ -7,7 +7,6 @@
 #include "hudmenu.h"
 #include "animacao.h"
 
-
 int main(void){
 
     InitWindow(GetScreenWidth(), GetScreenHeight(), "GAMEZIN");
@@ -17,7 +16,7 @@ int main(void){
     Player player;
     CreatePlayer(&player);
 
-    Room *rooms = (Room*) calloc (1, sizeof(Room));
+    Room *rooms = (Room*) calloc (3, sizeof(Room));
     CreateRooms(&rooms);
 
     Texture2D *LastMove, *CurrentMove;
@@ -33,6 +32,8 @@ int main(void){
     CreateHud(&infoHud);
 
     float counter = 0;
+    int CurrentRoom = 1;
+    int LastRoom = 1;
 
 
     while (!WindowShouldClose()){
@@ -55,18 +56,20 @@ int main(void){
                 if (IsKeyPressed(KEY_ENTER))
                     CurrentScreen = MENU;
 
-                DrawRoom(rooms, 1); //Printar Atras
+                VerifyRooms(&CurrentRoom, &LastRoom, &player);
+
+                DrawRoom(rooms[CurrentRoom], 1); //Printar Atras
 
                 if (player.CurrentLife > 0)
-                    AnimPlayer(&player, &LastMove, &CurrentMove, rooms, &Timer);
+                    AnimPlayer(&player, &LastMove, &CurrentMove, rooms[CurrentRoom], &Timer);
                 else  
                     AnimPlayerDeath(&player, &Timer);
 
-                DrawRoom(rooms, 0); // Printar na Frente
+                DrawRoom(rooms[CurrentRoom], 0); // Printar na Frente
 
                 DrawPlayerLife(player, infoHud, counter);
 
-                //for (int i = 0; i < rooms[0].platformNmbr; i++) DrawRectangleRec(rooms[0].platforms[i], WHITE);  
+                for (int i = 0; i < rooms[CurrentRoom].platformNmbr; i++) DrawRectangleRec(rooms[CurrentRoom].platforms[i], WHITE);  
 
                 break;
             }
@@ -78,16 +81,18 @@ int main(void){
         EndDrawing();
     }
     
-    for (int i = 0 ; i < 10 ; i++)
+    for (int i = 0 ; i < 14 ; i++)
         UnloadTexture(player.PlayerTextures[i]);
 
-    UnloadTexture(rooms[0].texture);
-    UnloadTexture(rooms[0].FrontTexture);
+    for (int i = 0 ; i < 3 ; i++){
+        UnloadTexture(rooms[i].texture);
+        UnloadTexture(rooms[i].FrontTexture);
+        free(rooms[i].platforms);
+    }
+    free(rooms); 
+
     UnloadTexture(menuInfo.Texture);
     UnloadTexture(infoHud.TexturePLife);
-
-    free(rooms[0].platforms);
-    free(rooms); 
 
     CloseWindow();
 }

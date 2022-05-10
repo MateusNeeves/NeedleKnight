@@ -6,10 +6,11 @@
 typedef struct Player {
     Vector2 position;
     float speed;
-    bool canJump;
+    bool canJump[2];
     bool attacking;
+    bool DoubleJump;
 
-    Texture2D PlayerTextures[10];
+    Texture2D PlayerTextures[14];
     Texture2D CurrentTexture;
     float FrameWidth;
     int MaxFrames;

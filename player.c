@@ -20,9 +20,12 @@
 
 void CreatePlayer(Player *player){
     player->position = (Vector2){1540, 545};
-    player->speed = 0;
-    player->canJump = true;
+    player->speed = 0; 
+    player->canJump[0] = true;
+    player->canJump[1] = true;
+    player->DoubleJump = false;
     player->attacking = false;
+
     player->FrameWidth = 0;
     player->CurrentFrame = 0;
     player->MaxFrames = 0;
@@ -38,6 +41,7 @@ void CreatePlayer(Player *player){
     player->PlayerTextures[AttackRight] = LoadTexture("Assets/Personagem/AttackRight.png");
     player->PlayerTextures[DeathLeft] = LoadTexture("Assets/Personagem/DeathLeft.png");
     player->PlayerTextures[DeathRight] = LoadTexture("Assets/Personagem/DeathRight.png");
+
     //Ao adicionar, alterar qtd na main.c e na player.h
 
     player->CurrentTexture = player->PlayerTextures[2];
@@ -49,20 +53,27 @@ void CreatePlayer(Player *player){
 
 void MovePlayer(Player **player, float delta)
 {
+    //Animacao Pulando
 
-    //Animacao Andando pra Esquerda e Pulando pra Esquerda
-
-    if (IsKeyDown(KEY_SPACE) && (*player)->canJump && !(*player)->attacking){
+    if (IsKeyPressed(KEY_SPACE) && (*player)->canJump[0] && !(*player)->attacking){
         (*player)->speed = -PlayerJumpSpeed;
-        (*player)->canJump = false;
+        (*player)->canJump[0] = false;
         (*player)->CurrentFrame = 0;
     }
+    else if (IsKeyPressed(KEY_SPACE) && (*player)->DoubleJump && !(*player)->canJump[0] && (*player)->canJump[1] && !(*player)->attacking){
+        (*player)->speed = -(PlayerJumpSpeed/1.15);
+        (*player)->canJump[1] = false;
+        (*player)->CurrentFrame = 0;
+    }
+
     
+    //Animacao Andando pra Esquerda e Pulando pra Esquerda
+
     if ((IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) && !(*player)->attacking){
         (*player)->position.x -= PlayerHorzSpeed * delta;
         (*player)->LastSide = Left;
 
-        if ((*player)->canJump){
+        if ((*player)->canJump[0]){
             (*player)->CurrentTexture = (*player)->PlayerTextures[RunLeft];
             (*player)->FrameWidth = (*player)->PlayerTextures[RunLeft].width / 8.0;
             (*player)->MaxFrames = (int) ((*player)->PlayerTextures[RunLeft].width / (int) (*player)->FrameWidth);
@@ -81,7 +92,7 @@ void MovePlayer(Player **player, float delta)
         (*player)->position.x += PlayerHorzSpeed * delta;
         (*player)->LastSide = Right;
 
-        if ((*player)->canJump){
+        if ((*player)->canJump[0]){
             (*player)->CurrentTexture = (*player)->PlayerTextures[RunRight];
             (*player)->FrameWidth = (*player)->PlayerTextures[RunRight].width / 8.0;
             (*player)->MaxFrames = (int) ((*player)->PlayerTextures[RunRight].width / (int) (*player)->FrameWidth);
@@ -96,8 +107,9 @@ void MovePlayer(Player **player, float delta)
 
     //Animacao Parado e Pulando Parado
 
-    if (IsKeyUp(KEY_A) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_D) && IsKeyUp(KEY_RIGHT) && !(*player)->attacking){
-        if ((*player)->canJump){
+    if (IsKeyUp(KEY_A) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_D) && IsKeyUp(KEY_RIGHT) && !(*player)->attacking)
+    {
+        if ((*player)->canJump[0]){
             if ((*player)->LastSide == Left){
                 (*player)->CurrentTexture = (*player)->PlayerTextures[StandLeft];
                 (*player)->FrameWidth = (*player)->PlayerTextures[StandLeft].width / 6.0;
@@ -127,7 +139,7 @@ void MovePlayer(Player **player, float delta)
 
     // Animacao de Ataque
 
-     if (IsKeyDown(KEY_Z) && (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) && (*player)->canJump){
+    if (IsKeyDown(KEY_Z) && (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) && (*player)->canJump[0]){
         (*player)->position.x -= PlayerHorzSpeed * delta;
         (*player)->attacking = true;
         (*player)->CurrentTexture = (*player)->PlayerTextures[AttackLeft];
@@ -135,7 +147,7 @@ void MovePlayer(Player **player, float delta)
         (*player)->MaxFrames = (int) ((*player)->PlayerTextures[AttackLeft].width / (int) (*player)->FrameWidth);
     } 
     
-    else if (IsKeyDown(KEY_Z) && (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) && (*player)->canJump){
+    else if (IsKeyDown(KEY_Z) && (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) && (*player)->canJump[0]){
         (*player)->position.x += PlayerHorzSpeed * delta;
         (*player)->attacking = true;
         (*player)->CurrentTexture = (*player)->PlayerTextures[AttackRight];
@@ -143,8 +155,8 @@ void MovePlayer(Player **player, float delta)
         (*player)->MaxFrames = (int) ((*player)->PlayerTextures[AttackRight].width / (int) (*player)->FrameWidth);
     }
 
-    else if (IsKeyDown(KEY_Z) && IsKeyUp(KEY_A) && IsKeyUp(KEY_D) && IsKeyUp(KEY_LEFT) && 
-             IsKeyUp(KEY_RIGHT) && !(*player)->attacking && (*player)->canJump)
+    else if (IsKeyDown(KEY_Z) && IsKeyUp(KEY_A) && IsKeyUp(KEY_D) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_RIGHT) && 
+            !(*player)->attacking && (*player)->canJump[0])
     {
         if ((*player)->LastSide == Left){
             (*player)->attacking = true;

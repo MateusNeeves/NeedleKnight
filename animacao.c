@@ -9,7 +9,9 @@
 void AnimMenu(Menu *menuInfo, float *Timer, char *diretorio){
     (*Timer) += GetFrameTime();
 
-    if ((*Timer) >= 0.1f){
+    DrawTextureV(menuInfo->Texture, (Vector2) {0, 0}, WHITE);
+
+    if ((*Timer) >= 0.08f){
         (*Timer) = 0.0f;
 
         menuInfo->CurrentFrame = menuInfo->CurrentFrame % 101;
@@ -20,19 +22,17 @@ void AnimMenu(Menu *menuInfo, float *Timer, char *diretorio){
         menuInfo->Texture = LoadTexture(diretorio);
     }
 
-        DrawTextureV(menuInfo->Texture, (Vector2) {0, 0}, WHITE);
-
 }
 
-void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, Room *rooms, float *Timer){
+void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, Room rooms, float *Timer){
     float deltaTime = GetFrameTime();
     (*LastMove) = &player->CurrentTexture;
 
     MovePlayer(&player, deltaTime);
 
-    ColisaoSupInf(&player, rooms[0], deltaTime);
+    ColisaoSupInf(&player, rooms, deltaTime);
 
-    ColisaoLateral(&player, rooms[0], deltaTime);
+    ColisaoLateral(&player, rooms, deltaTime);
 
     (*CurrentMove) = &player->CurrentTexture;
 
@@ -52,7 +52,7 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
         player->CurrentFrame += 1;
     } 
 
-        player->CurrentFrame = player->CurrentFrame % player->MaxFrames; 
+    player->CurrentFrame = player->CurrentFrame % player->MaxFrames; 
 
     Rectangle playerRec = {player->FrameWidth * player->CurrentFrame , 0, player->FrameWidth , player->CurrentTexture.height};
                     

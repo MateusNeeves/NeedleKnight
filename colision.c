@@ -39,13 +39,15 @@ void ColisaoSupInf(Player **player, Room rooms, float delta){
     if (!colision){
         (*player)->position.y += (*player)->speed * delta;
         (*player)->speed += G * delta;
-        if ((*player)->canJump)
+        if ((*player)->canJump[0])
             (*player)->CurrentFrame = 4;
             
-        (*player)->canJump = false;
+        (*player)->canJump[0] = false;
     }
-    else
-        (*player)->canJump = true;
+    else{
+        (*player)->canJump[0] = true;
+        (*player)->canJump[1] = true;
+    }   
 
 }
 
@@ -73,5 +75,7 @@ void ColisaoLateral(Player **player, Room rooms, float delta){
         {
             p->x -= PlayerHorzSpeed * delta;
         } 
+
+
     }
 }
