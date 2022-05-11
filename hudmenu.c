@@ -6,7 +6,6 @@ void CreateMenuInfo(Menu *menuInfo){
     menuInfo->Texture = LoadTexture("Assets/FramesMenu/1.png");
 
     menuInfo->CurrentFrame = 1;
-
 }
 
 void CreateHud(Hud *infoHud){

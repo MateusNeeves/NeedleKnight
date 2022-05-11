@@ -50,9 +50,8 @@ void CreatePlayer(Player *player){
     //Ao adicionar, alterar qtd na main.c e na player.h
 
     player->CurrentTexture = player->Textures[2];
-
     player->MaxLife = 10;
-    player->CurrentLife = 10;
+    player->CurrentLife = 1;
 }
 
 

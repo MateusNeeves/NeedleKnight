@@ -31,7 +31,7 @@ typedef struct Room {
 
 void CreateRooms(Room **rooms);
 
-void DrawRoom(Room rooms, int Front_Back);
+void DrawRoom(Room rooms, int Front_Back,Music ostSala,Player player);
 
 void VerifyRooms(int *CurrentRoom, int *LastRoom, Player *player);
 

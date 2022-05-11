@@ -19,14 +19,14 @@ void AnimMenu(Menu *menuInfo, float *Timer, char *diretorio){
 
     if ((*Timer) >= 0.08f){
         (*Timer) = 0.0f;
-
         menuInfo->CurrentFrame = menuInfo->CurrentFrame % 101;
         menuInfo->CurrentFrame += 1;
 
         UnloadTexture(menuInfo->Texture);
         sprintf(diretorio, "Assets/FramesMenu/%d.png", menuInfo->CurrentFrame);
         menuInfo->Texture = LoadTexture(diretorio);
-    }
+    } 
+
 
 }
 
@@ -76,7 +76,7 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
 }
 
 void AnimPlayerDeath(Player *player, float *Timer){
-
+    
     if (player->LastSide == 0){
         player->CurrentTexture = player->Textures[8];
         player->FrameWidth = player->Textures[8].width / 4.0;
@@ -102,7 +102,7 @@ void AnimPlayerDeath(Player *player, float *Timer){
                     
     Vector2 playerRecPosition = {player->position.x - player->FrameWidth/2 , player->position.y - player->CurrentTexture.height + 10};
 
-    DrawTextureRec(player->CurrentTexture, playerRec, playerRecPosition, WHITE); 
+    DrawTextureRec(player->CurrentTexture, playerRec, playerRecPosition, WHITE);
 }
 
 void AnimMossCharger(Enemies *enemy){

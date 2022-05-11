@@ -137,7 +137,13 @@ void CreateRooms(Room **rooms){
 
 }
 
-void DrawRoom(Room rooms, int Front_Back){
+void DrawRoom(Room rooms, int Front_Back,Music ostSala,Player player){
+    if(player.CurrentLife>0)
+    {
+        UpdateMusicStream(ostSala);
+        PlayMusicStream(ostSala);
+    }
+
     Rectangle fundo = {0 , 0, rooms.texture.width , rooms.texture.height };
 
     Vector2 posFundo = {0, 0};
