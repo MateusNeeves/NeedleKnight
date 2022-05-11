@@ -10,7 +10,7 @@ typedef struct Player {
     bool attacking;
     bool DoubleJump;
 
-    Texture2D PlayerTextures[14];
+    Texture2D Textures[12];
     Texture2D CurrentTexture;
     float FrameWidth;
     int MaxFrames;

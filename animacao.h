@@ -13,4 +13,8 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
 
 void AnimPlayerDeath(Player *player, float *Timer);
 
+void AnimMossCharger(Enemies *enemy);
+
+void AnimEnemy(Room *rooms, int CurrentRoom);
+
 #endif

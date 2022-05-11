@@ -16,7 +16,7 @@ int main(void){
     Player player;
     CreatePlayer(&player);
 
-    Room *rooms = (Room*) calloc (3, sizeof(Room));
+    Room *rooms = (Room*) calloc (4, sizeof(Room));
     CreateRooms(&rooms);
 
     Texture2D *LastMove, *CurrentMove;
@@ -34,7 +34,6 @@ int main(void){
     float counter = 0;
     int CurrentRoom = 1;
     int LastRoom = 1;
-
 
     while (!WindowShouldClose()){
         
@@ -59,6 +58,8 @@ int main(void){
                 VerifyRooms(&CurrentRoom, &LastRoom, &player);
 
                 DrawRoom(rooms[CurrentRoom], 1); //Printar Atras
+                if (rooms[CurrentRoom].enemyNmbr > 0)
+                    AnimEnemy(&rooms[CurrentRoom], CurrentRoom);
 
                 if (player.CurrentLife > 0)
                     AnimPlayer(&player, &LastMove, &CurrentMove, rooms[CurrentRoom], &Timer);
@@ -69,7 +70,7 @@ int main(void){
 
                 DrawPlayerLife(player, infoHud, counter);
 
-                for (int i = 0; i < rooms[CurrentRoom].platformNmbr; i++) DrawRectangleRec(rooms[CurrentRoom].platforms[i], WHITE);  
+                //for (int i = 0; i < rooms[CurrentRoom].platformNmbr; i++) DrawRectangleRec(rooms[CurrentRoom].platforms[i], WHITE);  
 
                 break;
             }
@@ -81,15 +82,20 @@ int main(void){
         EndDrawing();
     }
     
-    for (int i = 0 ; i < 14 ; i++)
-        UnloadTexture(player.PlayerTextures[i]);
+    for (int i = 0 ; i < 12 ; i++)
+        UnloadTexture(player.Textures[i]);
 
-    for (int i = 0 ; i < 3 ; i++){
+    for (int i = 0 ; i < 4 ; i++){
         UnloadTexture(rooms[i].texture);
         UnloadTexture(rooms[i].FrontTexture);
         free(rooms[i].platforms);
     }
     free(rooms); 
+
+    for (int i = 0 ; i < 6 ; i++)
+        UnloadTexture(rooms[0].enemy.Textures[i]);
+    
+
 
     UnloadTexture(menuInfo.Texture);
     UnloadTexture(infoHud.TexturePLife);
