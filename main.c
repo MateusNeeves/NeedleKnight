@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "raylib.h"
 #include "player.h"
 #include "colision.h"
@@ -10,23 +11,21 @@
 int main(void){
 
     InitWindow(GetScreenWidth(), GetScreenHeight(), "GAMEZIN");
-    //ToggleFullscreen();
+    ToggleFullscreen();
     SetTargetFPS(60);
 
     InitAudioDevice();
 
-    Music menuMusic = LoadMusicStream("musicas/TESTE.mp3"); // OST menu
+    Music menuMusic = LoadMusicStream("Assets/Musicas/MenuMusic.mp3"); // OST menu
 
     Music *musicas = calloc(4, sizeof(Music));
 
-    
-    //for(int i = 0;i<4;i++)
-        //musicas[i] = LoadMusicStream("musicas/OST-Room%d.mp3",i+1);
+    char diretorioMenu[30];
 
-    musicas[0] = LoadMusicStream("musicas/OST-Room1.mp3"); //Sala 0
-    musicas[1] = LoadMusicStream("musicas/OST-Room2.mp3"); //Sala 1
-    musicas[2] = LoadMusicStream("musicas/OST-Room3.mp3"); //Sala 2
-    musicas[3] = LoadMusicStream("musicas/OST-Room4.mp3"); //Sala 3
+    for(int i = 0; i < 4 ; i++){
+        sprintf(diretorioMenu, "Assets/Musicas/OST-Room%d.mp3", i);
+        musicas[i] = LoadMusicStream(diretorioMenu);
+    } 
 
     for(int i = 0;i<4;i++)
         SetMusicVolume(musicas[i], 0.07); 
@@ -34,9 +33,9 @@ int main(void){
     Sound *efeitos =NULL;
     efeitos = (Sound*) realloc(efeitos, 3 * sizeof(Sound));
     
-    efeitos[0] = LoadSound("musicas/PlayerAttack.mp3");
-    efeitos[1] = LoadSound("musicas/PlayerJump.mp3");
-    efeitos[2] = LoadSound("musicas/Hornet_Fight_Death_01.mp3");
+    efeitos[0] = LoadSound("Assets/EfeitosSonoros/PlayerAttack.mp3");
+    efeitos[1] = LoadSound("Assets/EfeitosSonoros/PlayerJump.mp3");
+    efeitos[2] = LoadSound("Assets/EfeitosSonoros/Hornet_Fight_Death_01.mp3");
 
     Player player;
     CreatePlayer(&player);
@@ -61,6 +60,7 @@ int main(void){
     int CurrentRoom = 1;
     int LastRoom = 1;
 
+    PlayMusicStream(menuMusic);
     
     while (!WindowShouldClose()){
         
@@ -69,12 +69,13 @@ int main(void){
            
             case MENU:{
                 
-                UpdateMusicStream(menuMusic);
                 if (IsKeyPressed(KEY_ENTER))
                 {   
-                    //PauseMusicStream(menuMusic);
+                    StopMusicStream(menuMusic);
                     CurrentScreen = GAMEPLAY;
                 }
+                UpdateMusicStream(menuMusic);
+
                 AnimMenu(&menuInfo, &Timer, diretorio);
                 break;
             }
@@ -83,7 +84,7 @@ int main(void){
                  
                 if (IsKeyPressed(KEY_ENTER))
                 {
-                    //ResumeMusicStream(menuMusic);
+                    PlayMusicStream(menuMusic);
                     CurrentScreen = MENU;
                 }
                 
@@ -96,22 +97,38 @@ int main(void){
                 VerifyRooms(&CurrentRoom, &LastRoom, &player);
 
                 DrawRoom(rooms[CurrentRoom], 1,musicas[CurrentRoom],player); //Printar Atras
-                if (rooms[CurrentRoom].enemyNmbr > 0)
-                    AnimEnemy(&rooms[CurrentRoom], CurrentRoom);
 
-                if (player.CurrentLife > 0)
+                if (rooms[CurrentRoom].enemyNmbr > 0){
+                    //DrawRectangleRec(rooms[0].enemy.HitBox, RED);
+                    AnimEnemy(&rooms[CurrentRoom], CurrentRoom);
+                }
+
+                if (player.CurrentLife > 0){
+                    //DrawRectangleRec(player.HitBox, BLUE);
                     AnimPlayer(&player, &LastMove, &CurrentMove, rooms[CurrentRoom], &Timer);
+                }
+                
                 else
                 {
-                    AnimPlayerDeath(&player, &Timer);
+                    AnimPlayerDeath(&player, &Timer, rooms[CurrentRoom]);
                     PlaySound(efeitos[2]);
                 }
 
+                if(IsKeyDown(KEY_P))  //^Funcao de Desenvolvedor
+                    player.CurrentLife = 2;
+
+                if (player.attacking)
+                    PlayerAttackColision(player, &rooms[CurrentRoom].enemy);
+                
+                MossChargerColision (rooms[CurrentRoom].enemy, &player);
+
                 DrawRoom(rooms[CurrentRoom], 0,musicas[CurrentRoom],player); // Printar na Frente
+
+                DamageHitEffect(player);
 
                 DrawPlayerLife(player, infoHud, counter);
 
-                //for (int i = 0; i < rooms[CurrentRoom].platformNmbr; i++) DrawRectangleRec(rooms[CurrentRoom].platforms[i], WHITE);  
+                //for (int i = 0; i < rooms[CurrentRoom].platformNmbr; i++) DrawRectangleRec(rooms[CurrentRoom].platforms[i], BLUE);  
 
                 break;
             }
@@ -123,7 +140,7 @@ int main(void){
         EndDrawing();
     }
     
-    for (int i = 0 ; i < 12 ; i++)
+    for (int i = 0 ; i < 13 ; i++)
         UnloadTexture(player.Textures[i]);
 
     for (int i = 0 ; i < 4 ; i++){

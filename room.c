@@ -39,7 +39,7 @@ void CreateRooms(Room **rooms){
 
             // -20   60   10
             (*rooms)[0].enemy.Textures[0] = LoadTexture("Assets/Inimigos/MossCharger/AppearingLeft.png");
-            (*rooms)[0].enemy.Textures[1] = LoadTexture("Assets/Inimigos/MoosCharger/AppearingRight.png");
+            (*rooms)[0].enemy.Textures[1] = LoadTexture("Assets/Inimigos/MossCharger/AppearingRight.png");
             (*rooms)[0].enemy.Textures[2] = LoadTexture("Assets/Inimigos/MossCharger/ChargeLeft.png");
             (*rooms)[0].enemy.Textures[3] = LoadTexture("Assets/Inimigos/MossCharger/ChargeRight.png");
             (*rooms)[0].enemy.Textures[4] = LoadTexture("Assets/Inimigos/MossCharger/DisappearingLeft.png");
@@ -97,8 +97,8 @@ void CreateRooms(Room **rooms){
         Rectangle platforms2[4] = {
             {0, 0, 1920, 130},         // Teto
             {0, 975, 1920, 110},      // Chao 
-            {0, 135, 65, 695},       // Parede Esquerda
-            {1875,145, 50, 675}     // Parede Direita
+            {0, 135, 50, 655},       // Parede Esquerda
+            {1875,145, 50, 655}     // Parede Direita
         };
 
         (*rooms)[2].platforms = (Rectangle *) calloc((*rooms)[2].platformNmbr, sizeof(Rectangle));
@@ -155,7 +155,7 @@ void DrawRoom(Room rooms, int Front_Back,Music ostSala,Player player){
 }
 
 void VerifyRooms(int *CurrentRoom, int *LastRoom, Player *player){
-    if (player->position.x < 0 && player->position.y > 1080){ //Porta Esquerda
+    if (player->position.x < 0){ //Porta Esquerda
         *LastRoom = *CurrentRoom;
         *CurrentRoom += 1;
 
@@ -163,7 +163,7 @@ void VerifyRooms(int *CurrentRoom, int *LastRoom, Player *player){
             player->position = (Vector2) {1850, 945};
         }
 
-        else if (*LastRoom == 1 && *CurrentRoom == 2){
+        if (*LastRoom == 1 && *CurrentRoom == 2){
             player->position = (Vector2) {1860, 975};
         }
 
@@ -172,9 +172,17 @@ void VerifyRooms(int *CurrentRoom, int *LastRoom, Player *player){
         }
     }
 
-    else if (player->position.x > 1920 && player->position.y > 1080){ // Porta Direita
+    else if (player->position.x > 1920){ // Porta Direita
         *LastRoom = *CurrentRoom;
         *CurrentRoom -= 1;
+
+        if (*LastRoom == 3 && *CurrentRoom == 2){
+            player->position = (Vector2) {50, 975};
+        }
+
+        if (*LastRoom == 2 && *CurrentRoom == 1){
+            player->position = (Vector2) {60, 350};
+        }
 
         if (*LastRoom == 1 && *CurrentRoom == 0){
             player->position = (Vector2) {50, 955};

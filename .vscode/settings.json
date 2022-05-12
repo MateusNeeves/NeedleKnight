@@ -9,6 +9,7 @@
         "menu.h": "c",
         "animacao.h": "c",
         "hud.h": "c",
-        "enemies.h": "c"
+        "enemies.h": "c",
+        "hudmenu.h": "c"
     }
 }

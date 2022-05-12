@@ -59,9 +59,8 @@ void ColisaoLateral(Player **player, Room rooms, float delta){
         if (!(*player)->attacking && 
             platform.x + platform.width > p->x - ((*player)->FrameWidth)/4 &&
             platform.x + platform.width < p->x - ((*player)->FrameWidth)/4 + PlayerHorzSpeed * delta * 7 &&
-            ((p->y > platform.y && p->y - (*player)->CurrentTexture.height < platform.y) || // Metade-Cima Retangulo
-            (p->y - (*player)->CurrentTexture.height > platform.y && p->y < platform.y + platform.height) || // Todo Entre-Retangulo
-            (p->y - (*player)->CurrentTexture.height < platform.y + platform.height && p->y > platform.y + platform.height))) // Metade-Baixo Retangulo
+            p->y - (*player)->CurrentTexture.height <= platform.y + platform.height &&
+            p->y >= platform.y)
         {
             p->x += PlayerHorzSpeed * delta;
         }
@@ -69,13 +68,53 @@ void ColisaoLateral(Player **player, Room rooms, float delta){
         else if (!(*player)->attacking && 
             platform.x < p->x + ((*player)->FrameWidth)/4 &&
             platform.x >= p->x + ((*player)->FrameWidth)/4 - PlayerHorzSpeed * delta * 7 &&
-            ((p->y > platform.y && p->y - (*player)->CurrentTexture.height < platform.y) || // Metade-Cima Retangulo
-            (p->y - (*player)->CurrentTexture.height > platform.y && p->y < platform.y + platform.height) || // Todo Entre-Retangulo
-            (p->y - (*player)->CurrentTexture.height < platform.y + platform.height && p->y > platform.y + platform.height))) // Metade-Baixo Retangulo
+            p->y - (*player)->CurrentTexture.height <= platform.y + platform.height &&
+            p->y >= platform.y)
         {
             p->x -= PlayerHorzSpeed * delta;
         } 
 
 
+    }
+}
+
+void MossChargerColision (Enemies enemy, Player *player){
+    float deltaTime = GetFrameTime();
+    static float InvunerableTimer;
+    
+    if(!player->Invulnerable && 
+       !player->attacking && 
+        player->CurrentLife > 0 && 
+        CheckCollisionRecs(enemy.HitBox , player->HitBox))
+    {
+        player->CurrentLife -= 1;
+        player->Invulnerable = true;
+    }
+
+    if (player->Invulnerable)
+        InvunerableTimer += deltaTime;
+
+    if (InvunerableTimer > 1.0f){
+        player->Invulnerable = false;
+        InvunerableTimer = 0.0f;
+    }
+}
+
+void PlayerAttackColision(Player player, Enemies *enemy){
+    float deltaTime = GetFrameTime();
+    static float InvunerableTimerE;
+
+
+    if (!enemy->Invulnerable && CheckCollisionRecs(enemy->HitBox , player.HitBox)){
+        enemy->CurrentLife -= 1;
+        enemy->Invulnerable = true;
+    }
+
+    if (enemy->Invulnerable)
+        InvunerableTimerE += deltaTime;
+
+    if (InvunerableTimerE > 1.0f){
+        enemy->Invulnerable = false;
+        InvunerableTimerE = 0.0f;
     }
 }

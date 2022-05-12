@@ -23,5 +23,6 @@ void CreateHud(Hud *infoHud);
 
 void DrawPlayerLife(Player player, Hud infoHud, float counter);
 
+void DamageHitEffect(Player player);
 
 #endif

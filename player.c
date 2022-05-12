@@ -19,6 +19,7 @@
 #define DeathRight 9
 #define DJumpLeftEffect 10
 #define DJumpRightEffect 11
+#define DamageEffect 12
 
 void CreatePlayer(Player *player){
     player->position = (Vector2){1540, 545};
@@ -27,6 +28,7 @@ void CreatePlayer(Player *player){
     player->canJump[1] = true;
     player->DoubleJump = true;
     player->attacking = false;
+    player->Invulnerable = false;
 
     player->FrameWidth = 0;
     player->CurrentFrame = 0;
@@ -45,13 +47,15 @@ void CreatePlayer(Player *player){
     player->Textures[DeathRight] = LoadTexture("Assets/Personagem/DeathRight.png");
     player->Textures[DJumpLeftEffect] = LoadTexture("Assets/Personagem/DJumpLeftEffect.png");
     player->Textures[DJumpRightEffect] = LoadTexture("Assets/Personagem/DJumpRightEffect.png");
+    player->Textures[DamageEffect] = LoadTexture("Assets/Personagem/DamageEffect.png");
 
 
     //Ao adicionar, alterar qtd na main.c e na player.h
 
     player->CurrentTexture = player->Textures[2];
     player->MaxLife = 10;
-    player->CurrentLife = 1;
+    player->CurrentLife = 10;
+
 }
 
 
@@ -143,33 +147,17 @@ void MovePlayer(Player **player, float delta)
 
     // Animacao de Ataque
 
-    if (IsKeyDown(KEY_Z) && (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) && (*player)->canJump[0]){
-        (*player)->position.x -= PlayerHorzSpeed * delta;
-        (*player)->attacking = true;
-        (*player)->CurrentTexture = (*player)->Textures[AttackLeft];
-        (*player)->FrameWidth = (*player)->Textures[AttackLeft].width / 3.0;
-        (*player)->MaxFrames = (int) ((*player)->Textures[AttackLeft].width / (int) (*player)->FrameWidth);
-    } 
-    
-    else if (IsKeyDown(KEY_Z) && (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) && (*player)->canJump[0]){
-        (*player)->position.x += PlayerHorzSpeed * delta;
-        (*player)->attacking = true;
-        (*player)->CurrentTexture = (*player)->Textures[AttackRight];
-        (*player)->FrameWidth = (*player)->Textures[AttackRight].width / 3.0;
-        (*player)->MaxFrames = (int) ((*player)->Textures[AttackRight].width / (int) (*player)->FrameWidth);
-    }
-
-    else if (IsKeyDown(KEY_Z) && IsKeyUp(KEY_A) && IsKeyUp(KEY_D) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_RIGHT) && 
+    if (IsKeyPressed(KEY_Z) && IsKeyUp(KEY_A) && IsKeyUp(KEY_D) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_RIGHT) && 
             !(*player)->attacking && (*player)->canJump[0])
     {
+        (*player)->CurrentFrame = 0;
+        (*player)->attacking = true;
         if ((*player)->LastSide == Left){
-            (*player)->attacking = true;
             (*player)->CurrentTexture = (*player)->Textures[AttackLeft];
             (*player)->FrameWidth = (*player)->Textures[AttackLeft].width / 3.0;
             (*player)->MaxFrames = (int) ((*player)->Textures[AttackLeft].width / (int) (*player)->FrameWidth);
         }
         else{
-            (*player)->attacking = true;
             (*player)->CurrentTexture = (*player)->Textures[AttackRight];
             (*player)->FrameWidth = (*player)->Textures[AttackRight].width / 3.0;
             (*player)->MaxFrames = (int) ((*player)->Textures[AttackRight].width / (int) (*player)->FrameWidth);

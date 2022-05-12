@@ -6,8 +6,10 @@
 
 typedef struct Enemies {
     Vector2 position;
+    Rectangle HitBox;
     float speed;
     bool attacking;
+    bool Invulnerable;
 
     Texture2D Textures[6];
     Texture2D CurrentTexture;

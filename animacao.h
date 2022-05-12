@@ -11,9 +11,11 @@ void AnimMenu(Menu *menuInfo, float *Timer, char *diretorio);
 
 void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, Room rooms, float *Timer);
 
-void AnimPlayerDeath(Player *player, float *Timer);
+void AnimPlayerDeath(Player *player, float *Timer, Room rooms);
 
 void AnimMossCharger(Enemies *enemy);
+
+void AnimMossChargerDeath(Enemies *enemy);
 
 void AnimEnemy(Room *rooms, int CurrentRoom);
 
