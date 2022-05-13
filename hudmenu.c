@@ -7,7 +7,7 @@ void CreateMenuInfo(Menu *menuInfo){
 
     menuInfo->CurrentFrame = 1;
 
-    menuInfo->MenuMusic = LoadSound("Assets/Musicas/MenuMusic.mp3");
+    menuInfo->MenuMusic = LoadSound("Assets/Musicas/Menu-ST/MenuMusic.mp3");
 }
 
 void CreateHud(Hud *infoHud){

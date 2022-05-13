@@ -24,7 +24,7 @@ int main(void){
     CreateRooms(&rooms);
 
     for(int i = 0; i < 4; i++)
-        SetMusicVolume(rooms[i].SoundTrack, 0.07); 
+        SetMusicVolume(rooms[i].SoundTrack, 0.02); 
 
     Texture2D *LastMove, *CurrentMove;
     float Timer = 0.0f;
@@ -42,7 +42,14 @@ int main(void){
     int CurrentEnemy = 0;
     int LastRoom = 1;
 
+    SetSoundVolume(menuInfo.MenuMusic,0.3);
     PlaySound(menuInfo.MenuMusic);
+
+    PlaySound(player.SoundEffects[2]);
+    PauseSound(player.SoundEffects[2]);
+
+    for(int i = 0;i<4;i++) 
+        SetSoundVolume(player.SoundEffects[i],0.09);
     
     while (!WindowShouldClose()){
         
@@ -69,24 +76,25 @@ int main(void){
                     CurrentScreen = MENU;
                 }
 
-                PlaySound(player.SoundEffects[3]);
+                //PlaySound(player.SoundEffects[3]);
                 
-                if(IsKeyDown(KEY_Z) && player.canJump[0])
-                    PlaySound(player.SoundEffects[0]);
-
-                if(IsKeyDown(KEY_SPACE) && player.canJump[1])
-                    PlaySound(player.SoundEffects[1]);
-
                 VerifyRooms(&CurrentEnemy, &CurrentRoom, &LastRoom, &player);
 
                 DrawRoom(rooms[CurrentRoom], 1, player); //Printar Atras
 
+                //if( ( IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT) ) && !player.attacking && player.canJump[0])
+                    //PlaySound(player.SoundEffects[3]);
+
+                
+                //if( ( IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT) ) && !player.attacking && player.canJump[0])
+                    //PlaySound(player.SoundEffects[3]);
+                    
                 if (rooms[CurrentRoom].enemyNmbr > 0){
                     //DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].SwordHitBox, PURPLE);
                     DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].HitBox, RED);
                     AnimEnemy(&player, &rooms[CurrentRoom].enemy[CurrentEnemy], CurrentRoom, &CurrentEnemy);
                 }
-
+                
                 if (rooms[2].enemy[0].CurrentLife > 0){
                     rooms[2].enemy[1].position = rooms[2].enemy[0].position;
                     rooms[2].enemy[1].LastSide = rooms[2].enemy[0].LastSide;
@@ -101,7 +109,7 @@ int main(void){
                     player.DoubleJump = true;
                     player.CurrentLife = 10;
                 }
-
+                
                 if (player.CurrentLife > 0){
                     //DrawRectangleRec(player.HitBox, BLUE);
                     //DrawRectangleRec(player.SwordHitBox, PURPLE);

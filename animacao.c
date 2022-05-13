@@ -11,7 +11,7 @@
 #define Right 1
 #define DJumpLeftEffect 10
 #define DJumpRightEffect 11
-#define DamageEffect 12
+#define DamageEffect 1
 
 
 void AnimMenu(Menu *menuInfo, float *Timer){
@@ -98,8 +98,8 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
         player->CurrentFrame += 1;
     } 
 
-    if (player->canJump && !player->attacking && (player->CurrentFrame == 2 || player->CurrentFrame == 6))
-        PlaySound(player->SoundEffects[3]);
+    //if (player->canJump && !player->attacking && (player->CurrentFrame == 2 || player->CurrentFrame == 6))
+        //PlaySound(player->SoundEffects[3]);
 
     player->CurrentFrame = player->CurrentFrame % player->MaxFrames; 
 
@@ -119,6 +119,7 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
 }
 
 void AnimPlayerDeath(Player *player, float *Timer, Room rooms){
+    ResumeSound((*player).SoundEffects[2]);
     float deltaTime = GetFrameTime();
     static int flag = 1;
 

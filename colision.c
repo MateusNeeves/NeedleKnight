@@ -2,6 +2,7 @@
 #include "colision.h"
 #include "player.h"
 #include "room.h"
+#include "animacao.h"
 
 #define G 2500 // 2500
 #define PlayerHorzSpeed 400.0f

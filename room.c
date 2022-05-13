@@ -14,7 +14,7 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[0].FrontTexture = LoadTexture("assets/Mapa/Mapa0Frente.png");
 
-        (*rooms)[0].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room0.mp3");
+        (*rooms)[0].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room1.mp3");
         
         (*rooms)[0].platformNmbr = 7;
 
@@ -98,7 +98,7 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[1].FrontTexture = LoadTexture("assets/Mapa/Mapa1Frente.png");
 
-        (*rooms)[1].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room1.mp3");
+        (*rooms)[1].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room2.mp3");
         
         (*rooms)[1].platformNmbr = 9;
 
@@ -128,7 +128,7 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[2].FrontTexture = LoadTexture("assets/Mapa/Mapa2Frente.png");
 
-        (*rooms)[2].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room2.mp3");
+        (*rooms)[2].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room3.mp3");
 
         (*rooms)[2].platformNmbr = 4;
 
@@ -172,7 +172,7 @@ void CreateRooms(Room **rooms){
             (*rooms)[2].enemy[0].LastSide = Right;
 
             (*rooms)[2].enemy[0].MaxLife = 7;
-            (*rooms)[2].enemy[0].CurrentLife = 1;
+            (*rooms)[2].enemy[0].CurrentLife = 4;
             (*rooms)[2].enemy[0].Damage = 2;
 
         //^ ENEMY 1 
@@ -195,7 +195,7 @@ void CreateRooms(Room **rooms){
             (*rooms)[2].enemy[1].CurrentFrame = 0;
 
             (*rooms)[2].enemy[1].MaxLife = 10;
-            (*rooms)[2].enemy[1].CurrentLife = 1;
+            (*rooms)[2].enemy[1].CurrentLife = 10;
             (*rooms)[2].enemy[1].Damage = 2;
 
     //ROOM 3
@@ -204,7 +204,7 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[3].FrontTexture = LoadTexture("assets/Mapa/Mapa3Frente.png");
         
-        (*rooms)[3].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room3.mp3");
+        (*rooms)[3].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room4.mp3");
 
         (*rooms)[3].platformNmbr = 7;
 
