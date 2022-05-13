@@ -7,16 +7,22 @@
 #include "room.h"
 #include "hudmenu.h"
 
-void AnimMenu(Menu *menuInfo, float *Timer, char *diretorio);
+void AnimMenu(Menu *menuInfo, float *Timer);
 
 void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, Room rooms, float *Timer);
 
 void AnimPlayerDeath(Player *player, float *Timer, Room rooms);
 
-void AnimMossCharger(Enemies *enemy);
+void AnimMossCharger(Enemies **enemy);
 
-void AnimMossChargerDeath(Enemies *enemy);
+void AnimMossChargerDeath(Enemies **enemy, int **CurrentEnemy, float *Timer2);
 
-void AnimEnemy(Room *rooms, int CurrentRoom);
+void AnimKingsMould(Enemies **enemy, Player **player);
+
+void AnimKingsMouldDeath(Enemies **enemy, int **CurrentEnemy);
+
+void AnimTheCollector(Enemies **enemy, Player **player);
+
+void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnemy);
 
 #endif

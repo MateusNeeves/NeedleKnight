@@ -11,31 +11,10 @@
 int main(void){
 
     InitWindow(GetScreenWidth(), GetScreenHeight(), "GAMEZIN");
-    ToggleFullscreen();
+    //ToggleFullscreen();
     SetTargetFPS(60);
 
     InitAudioDevice();
-
-    Music menuMusic = LoadMusicStream("Assets/Musicas/MenuMusic.mp3"); // OST menu
-
-    Music *musicas = calloc(4, sizeof(Music));
-
-    char diretorioMenu[30];
-
-    for(int i = 0; i < 4 ; i++){
-        sprintf(diretorioMenu, "Assets/Musicas/OST-Room%d.mp3", i);
-        musicas[i] = LoadMusicStream(diretorioMenu);
-    } 
-
-    for(int i = 0;i<4;i++)
-        SetMusicVolume(musicas[i], 0.07); 
-
-    Sound *efeitos =NULL;
-    efeitos = (Sound*) realloc(efeitos, 3 * sizeof(Sound));
-    
-    efeitos[0] = LoadSound("Assets/EfeitosSonoros/PlayerAttack.mp3");
-    efeitos[1] = LoadSound("Assets/EfeitosSonoros/PlayerJump.mp3");
-    efeitos[2] = LoadSound("Assets/EfeitosSonoros/Hornet_Fight_Death_01.mp3");
 
     Player player;
     CreatePlayer(&player);
@@ -44,11 +23,13 @@ int main(void){
     rooms= (Room*) realloc(rooms, 4*sizeof(Room));
     CreateRooms(&rooms);
 
+    for(int i = 0; i < 4; i++)
+        SetMusicVolume(rooms[i].SoundTrack, 0.07); 
+
     Texture2D *LastMove, *CurrentMove;
     float Timer = 0.0f;
 
     GameScreen CurrentScreen = MENU;
-    char diretorio[27];
     
     Menu menuInfo;
     CreateMenuInfo(&menuInfo);
@@ -58,9 +39,10 @@ int main(void){
     
     float counter = 0;
     int CurrentRoom = 1;
+    int CurrentEnemy = 0;
     int LastRoom = 1;
 
-    PlayMusicStream(menuMusic);
+    PlaySound(menuInfo.MenuMusic);
     
     while (!WindowShouldClose()){
         
@@ -71,12 +53,11 @@ int main(void){
                 
                 if (IsKeyPressed(KEY_ENTER))
                 {   
-                    StopMusicStream(menuMusic);
+                    StopSound(menuInfo.MenuMusic);
                     CurrentScreen = GAMEPLAY;
                 }
-                UpdateMusicStream(menuMusic);
 
-                AnimMenu(&menuInfo, &Timer, diretorio);
+                AnimMenu(&menuInfo, &Timer);
                 break;
             }
             
@@ -84,45 +65,62 @@ int main(void){
                  
                 if (IsKeyPressed(KEY_ENTER))
                 {
-                    PlayMusicStream(menuMusic);
+                    PlaySound(menuInfo.MenuMusic);
                     CurrentScreen = MENU;
                 }
+
+                PlaySound(player.SoundEffects[3]);
                 
-                if(IsKeyDown(KEY_Z) && CurrentScreen != MENU && player.canJump[0])
-                    PlaySound(efeitos[0]);
+                if(IsKeyDown(KEY_Z) && player.canJump[0])
+                    PlaySound(player.SoundEffects[0]);
 
-                if(IsKeyDown(KEY_SPACE) && CurrentScreen!=MENU && player.canJump[1])
-                    PlaySound(efeitos[1]);
+                if(IsKeyDown(KEY_SPACE) && player.canJump[1])
+                    PlaySound(player.SoundEffects[1]);
 
-                VerifyRooms(&CurrentRoom, &LastRoom, &player);
+                VerifyRooms(&CurrentEnemy, &CurrentRoom, &LastRoom, &player);
 
-                DrawRoom(rooms[CurrentRoom], 1,musicas[CurrentRoom],player); //Printar Atras
+                DrawRoom(rooms[CurrentRoom], 1, player); //Printar Atras
 
                 if (rooms[CurrentRoom].enemyNmbr > 0){
-                    //DrawRectangleRec(rooms[0].enemy.HitBox, RED);
-                    AnimEnemy(&rooms[CurrentRoom], CurrentRoom);
+                    //DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].SwordHitBox, PURPLE);
+                    DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].HitBox, RED);
+                    AnimEnemy(&player, &rooms[CurrentRoom].enemy[CurrentEnemy], CurrentRoom, &CurrentEnemy);
+                }
+
+                if (rooms[2].enemy[0].CurrentLife > 0){
+                    rooms[2].enemy[1].position = rooms[2].enemy[0].position;
+                    rooms[2].enemy[1].LastSide = rooms[2].enemy[0].LastSide;
+                    rooms[2].enemy[1].CurrentTexture = rooms[2].enemy[1].Textures[rooms[2].enemy[1].LastSide];
+                    rooms[2].enemy[1].FrameWidth = rooms[2].enemy[1].CurrentTexture.width/6.0;
+                }
+
+                if((rooms[0].enemy[1].CurrentLife < 1 && CurrentRoom == 0) ||
+                   (rooms[2].enemy[1].CurrentLife < 1 && CurrentRoom == 2) ||
+                   (rooms[3].enemy[1].CurrentLife < 1))
+                {
+                    player.DoubleJump = true;
+                    player.CurrentLife = 10;
                 }
 
                 if (player.CurrentLife > 0){
                     //DrawRectangleRec(player.HitBox, BLUE);
+                    //DrawRectangleRec(player.SwordHitBox, PURPLE);
                     AnimPlayer(&player, &LastMove, &CurrentMove, rooms[CurrentRoom], &Timer);
                 }
                 
                 else
                 {
                     AnimPlayerDeath(&player, &Timer, rooms[CurrentRoom]);
-                    PlaySound(efeitos[2]);
                 }
 
                 if(IsKeyDown(KEY_P))  //^Funcao de Desenvolvedor
-                    player.CurrentLife = 2;
+                    player.CurrentLife = 10;
 
-                if (player.attacking)
-                    PlayerAttackColision(player, &rooms[CurrentRoom].enemy);
+                PlayerAttackColision(player, &rooms[CurrentRoom].enemy[CurrentEnemy]);
                 
-                MossChargerColision (rooms[CurrentRoom].enemy, &player);
+                EnemyColision (rooms[CurrentRoom].enemy[CurrentEnemy], &player);
 
-                DrawRoom(rooms[CurrentRoom], 0,musicas[CurrentRoom],player); // Printar na Frente
+                DrawRoom(rooms[CurrentRoom], 0, player); // Printar na Frente
 
                 DamageHitEffect(player);
 
@@ -143,26 +141,39 @@ int main(void){
     for (int i = 0 ; i < 13 ; i++)
         UnloadTexture(player.Textures[i]);
 
+    free(player.Textures);
+
+    for (int i = 0 ; i < 4 ; i++)
+        UnloadSound(player.SoundEffects[i]);
+
+    free(player.SoundEffects);
+
     for (int i = 0 ; i < 4 ; i++){
         UnloadTexture(rooms[i].texture);
         UnloadTexture(rooms[i].FrontTexture);
         free(rooms[i].platforms);
+        
     }
-    free(rooms); 
+    for (int i = 0 ; i < 4 ; i++)
+        for (int j = 0 ; j < 2 ; j++){
+            if (i == 0)
+                for (int k = 0 ; k < 6 ; k++)
+                    UnloadTexture(rooms[i].enemy[j].Textures[k]);
+            if(i == 2)
+                for (int k = 0 ; k < 8 ; k++)
+                    UnloadTexture(rooms[i].enemy[j].Textures[k]);
+        }
 
-    for (int i = 0 ; i < 6 ; i++)
-        UnloadTexture(rooms[0].enemy.Textures[i]);
+    free(rooms); 
     
     UnloadTexture(menuInfo.Texture);
     UnloadTexture(infoHud.TexturePLife);
     
-    UnloadMusicStream(menuMusic);
+    UnloadSound(menuInfo.MenuMusic);
 
-    for(int i = 0;i<3;i++)
-        UnloadSound(efeitos[i]);
+    for(int i = 0 ; i < 4 ; i++)
+        UnloadMusicStream(rooms[i].SoundTrack);
 
-    for(int i = 0;i<3;i++)
-        UnloadMusicStream(musicas[i]);
 
     CloseAudioDevice();
 

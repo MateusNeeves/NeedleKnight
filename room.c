@@ -4,14 +4,17 @@
 #include <stdlib.h>
 
 #define Left 0
+#define Right 1
 
 void CreateRooms(Room **rooms){
 
-    //ROOM 0
+    //^ ROOM 0
 
         (*rooms)[0].texture = LoadTexture("assets/Mapa/Mapa0.png");
 
         (*rooms)[0].FrontTexture = LoadTexture("assets/Mapa/Mapa0Frente.png");
+
+        (*rooms)[0].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room0.mp3");
         
         (*rooms)[0].platformNmbr = 7;
 
@@ -25,44 +28,77 @@ void CreateRooms(Room **rooms){
             {880, 530, 190, 40}   // Plataforma Meio
         };
 
-        (*rooms)[0].platforms = (Rectangle *) calloc((*rooms)[0].platformNmbr, sizeof(Rectangle));
+        (*rooms)[0].platforms = (Rectangle*) calloc((*rooms)[0].platformNmbr, sizeof(Rectangle));
 
         for (int i = 0 ; i < (*rooms)[0].platformNmbr ; i++)
             (*rooms)[0].platforms[i] = platforms0[i];
 
-        (*rooms)[0].enemyNmbr = 1;
+        (*rooms)[0].enemyNmbr = 2;
 
-        // ENEMY 1 ROOM 0
-            (*rooms)[0].enemy.position = (Vector2) {1650, 945};
-            (*rooms)[0].enemy.speed = 400.0f;
-            (*rooms)[0].enemy.attacking = false;
+        //^ ENEMY 0 
+
+            (*rooms)[0].enemy[0].position = (Vector2) {1650, 945};
+            (*rooms)[0].enemy[0].speed = 400.0f;
+            (*rooms)[0].enemy[0].attacking = false;
+            (*rooms)[0].enemy[0].Invulnerable = false;
 
             // -20   60   10
-            (*rooms)[0].enemy.Textures[0] = LoadTexture("Assets/Inimigos/MossCharger/AppearingLeft.png");
-            (*rooms)[0].enemy.Textures[1] = LoadTexture("Assets/Inimigos/MossCharger/AppearingRight.png");
-            (*rooms)[0].enemy.Textures[2] = LoadTexture("Assets/Inimigos/MossCharger/ChargeLeft.png");
-            (*rooms)[0].enemy.Textures[3] = LoadTexture("Assets/Inimigos/MossCharger/ChargeRight.png");
-            (*rooms)[0].enemy.Textures[4] = LoadTexture("Assets/Inimigos/MossCharger/DisappearingLeft.png");
-            (*rooms)[0].enemy.Textures[5] = LoadTexture("Assets/Inimigos/MossCharger/DisappearingRight.png");
+
+            (*rooms)[0].enemy[0].Textures = (Texture2D*) calloc (6, sizeof(Texture2D));
+
+            (*rooms)[0].enemy[0].Textures[0] = LoadTexture("Assets/Inimigos/MossCharger/AppearingLeft.png");
+            (*rooms)[0].enemy[0].Textures[1] = LoadTexture("Assets/Inimigos/MossCharger/AppearingRight.png");
+            (*rooms)[0].enemy[0].Textures[2] = LoadTexture("Assets/Inimigos/MossCharger/ChargeLeft.png");
+            (*rooms)[0].enemy[0].Textures[3] = LoadTexture("Assets/Inimigos/MossCharger/ChargeRight.png");
+            (*rooms)[0].enemy[0].Textures[4] = LoadTexture("Assets/Inimigos/MossCharger/DisappearingLeft.png");
+            (*rooms)[0].enemy[0].Textures[5] = LoadTexture("Assets/Inimigos/MossCharger/DisappearingRight.png");
 
 
-            (*rooms)[0].enemy.CurrentTexture =  (*rooms)[0].enemy.Textures[0];
+            (*rooms)[0].enemy[0].CurrentTexture =  (*rooms)[0].enemy[0].Textures[0];
 
-            (*rooms)[0].enemy.FrameWidth = (*rooms)[0].enemy.Textures[0].width/6;
-            (*rooms)[0].enemy.MaxFrames = 6;
-            (*rooms)[0].enemy.CurrentFrame = 0;
-            (*rooms)[0].enemy.LastSide = Left;
+            (*rooms)[0].enemy[0].FrameWidth = (*rooms)[0].enemy[0].Textures[0].width/6;
+            (*rooms)[0].enemy[0].CurrentFrame = 0;
+            (*rooms)[0].enemy[0].LastSide = Left;
 
-            (*rooms)[0].enemy.MaxLife = 5;
-            (*rooms)[0].enemy.CurrentLife = 5;
+            (*rooms)[0].enemy[0].MaxLife = 5;
+            (*rooms)[0].enemy[0].CurrentLife = 5;
+            (*rooms)[0].enemy[0].Damage = 1;
+
+        //^ ENEMY 1
+            (*rooms)[0].enemy[1].position = (Vector2) {1650, 945};
+            (*rooms)[0].enemy[1].speed = 400.0f;
+            (*rooms)[0].enemy[1].attacking = false;
+            (*rooms)[0].enemy[1].Invulnerable = false;
 
 
+            (*rooms)[0].enemy[1].Textures = (Texture2D*) calloc (6, sizeof(Texture2D));
 
-    //ROOM 1
+            (*rooms)[0].enemy[1].Textures[0] = LoadTexture("Assets/Inimigos/MassiveMossCharger/AppearingLeft.png");
+            (*rooms)[0].enemy[1].Textures[1] = LoadTexture("Assets/Inimigos/MassiveMossCharger/AppearingRight.png");
+            (*rooms)[0].enemy[1].Textures[2] = LoadTexture("Assets/Inimigos/MassiveMossCharger/ChargeLeft.png");
+            (*rooms)[0].enemy[1].Textures[3] = LoadTexture("Assets/Inimigos/MassiveMossCharger/ChargeRight.png");
+            (*rooms)[0].enemy[1].Textures[4] = LoadTexture("Assets/Inimigos/MassiveMossCharger/DisappearingLeft.png");
+            (*rooms)[0].enemy[1].Textures[5] = LoadTexture("Assets/Inimigos/MassiveMossCharger/DisappearingRight.png");
+
+
+            (*rooms)[0].enemy[1].CurrentTexture =  (*rooms)[0].enemy[1].Textures[0];
+
+            (*rooms)[0].enemy[1].FrameWidth = (*rooms)[0].enemy[1].Textures[0].width/6;
+            (*rooms)[0].enemy[1].CurrentFrame = 0;
+            (*rooms)[0].enemy[1].LastSide = Left;
+
+            (*rooms)[0].enemy[1].MaxLife = 10;
+            (*rooms)[0].enemy[1].CurrentLife = 10;
+            (*rooms)[0].enemy[1].Damage = 1;
+
+
+    //^ ROOM 1
 
         (*rooms)[1].texture = LoadTexture("assets/Mapa/Mapa1.png");
 
         (*rooms)[1].FrontTexture = LoadTexture("assets/Mapa/Mapa1Frente.png");
+
+        (*rooms)[1].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room1.mp3");
         
         (*rooms)[1].platformNmbr = 9;
 
@@ -86,12 +122,14 @@ void CreateRooms(Room **rooms){
         (*rooms)[1].enemyNmbr = 0;
 
 
-    // ROOM 2
+    //^ ROOM 2
 
         (*rooms)[2].texture = LoadTexture("assets/Mapa/Mapa2.png");
 
         (*rooms)[2].FrontTexture = LoadTexture("assets/Mapa/Mapa2Frente.png");
-        
+
+        (*rooms)[2].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room2.mp3");
+
         (*rooms)[2].platformNmbr = 4;
 
         Rectangle platforms2[4] = {
@@ -106,8 +144,59 @@ void CreateRooms(Room **rooms){
         for (int i = 0 ; i < (*rooms)[2].platformNmbr ; i++)
             (*rooms)[2].platforms[i] = platforms2[i];
 
-        (*rooms)[2].enemyNmbr = 0;
+        (*rooms)[2].enemyNmbr = 2;
 
+        //^ ENEMY 0 
+            (*rooms)[2].enemy[0].position = (Vector2) {135, 975};
+            (*rooms)[2].enemy[0].speed = 330.0f;
+            (*rooms)[2].enemy[0].attacking = false;
+            (*rooms)[2].enemy[0].Invulnerable = false;
+
+
+            (*rooms)[2].enemy[0].Textures = (Texture2D*) calloc (8, sizeof(Texture2D));
+
+
+            (*rooms)[2].enemy[0].Textures[0] = LoadTexture("Assets/Inimigos/KingsMould/Sleeping.png");
+            (*rooms)[2].enemy[0].Textures[1] = LoadTexture("Assets/Inimigos/KingsMould/Waking.png");
+            (*rooms)[2].enemy[0].Textures[2] = LoadTexture("Assets/Inimigos/KingsMould/RunLeft.png");
+            (*rooms)[2].enemy[0].Textures[3] = LoadTexture("Assets/Inimigos/KingsMould/RunRight.png");
+            (*rooms)[2].enemy[0].Textures[4] = LoadTexture("Assets/Inimigos/KingsMould/AttackLeft.png");
+            (*rooms)[2].enemy[0].Textures[5] = LoadTexture("Assets/Inimigos/KingsMould/AttackRight.png");
+            (*rooms)[2].enemy[0].Textures[6] = LoadTexture("Assets/Inimigos/KingsMould/DeathLeft.png");
+            (*rooms)[2].enemy[0].Textures[7] = LoadTexture("Assets/Inimigos/KingsMould/DeathRight.png");
+
+            (*rooms)[2].enemy[0].CurrentTexture =  (*rooms)[2].enemy[0].Textures[0];
+
+            (*rooms)[2].enemy[0].FrameWidth = (*rooms)[2].enemy[0].Textures[0].width;
+            (*rooms)[2].enemy[0].CurrentFrame = 0;
+            (*rooms)[2].enemy[0].LastSide = Right;
+
+            (*rooms)[2].enemy[0].MaxLife = 7;
+            (*rooms)[2].enemy[0].CurrentLife = 1;
+            (*rooms)[2].enemy[0].Damage = 2;
+
+        //^ ENEMY 1 
+            (*rooms)[2].enemy[1].position = (Vector2) {0, 0};
+            (*rooms)[2].enemy[1].speed = 500.0f;
+            (*rooms)[2].enemy[1].attacking = false;
+            (*rooms)[2].enemy[1].Invulnerable = false;
+
+
+            (*rooms)[2].enemy[1].Textures = (Texture2D*) calloc (6, sizeof(Texture2D));
+
+
+            (*rooms)[2].enemy[1].Textures[0] = LoadTexture("Assets/Inimigos/TheCollector/AppearingLeft.png");
+            (*rooms)[2].enemy[1].Textures[1] = LoadTexture("Assets/Inimigos/TheCollector/AppearingRight.png");
+            (*rooms)[2].enemy[1].Textures[2] = LoadTexture("Assets/Inimigos/TheCollector/JumpLeft.png");
+            (*rooms)[2].enemy[1].Textures[3] = LoadTexture("Assets/Inimigos/TheCollector/JumpRight.png");
+            (*rooms)[2].enemy[1].Textures[4] = LoadTexture("Assets/Inimigos/TheCollector/DeathLeft.png");
+            (*rooms)[2].enemy[1].Textures[5] = LoadTexture("Assets/Inimigos/TheCollector/DeathRight.png");
+
+            (*rooms)[2].enemy[1].CurrentFrame = 0;
+
+            (*rooms)[2].enemy[1].MaxLife = 10;
+            (*rooms)[2].enemy[1].CurrentLife = 1;
+            (*rooms)[2].enemy[1].Damage = 2;
 
     //ROOM 3
 
@@ -115,6 +204,8 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[3].FrontTexture = LoadTexture("assets/Mapa/Mapa3Frente.png");
         
+        (*rooms)[3].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room3.mp3");
+
         (*rooms)[3].platformNmbr = 7;
 
         Rectangle platforms3[7] = {
@@ -137,11 +228,11 @@ void CreateRooms(Room **rooms){
 
 }
 
-void DrawRoom(Room rooms, int Front_Back,Music ostSala,Player player){
+void DrawRoom(Room rooms, int Front_Back,Player player){
     if(player.CurrentLife>0)
     {
-        UpdateMusicStream(ostSala);
-        PlayMusicStream(ostSala);
+        UpdateMusicStream(rooms.SoundTrack);
+        PlayMusicStream(rooms.SoundTrack);
     }
 
     Rectangle fundo = {0 , 0, rooms.texture.width , rooms.texture.height };
@@ -154,10 +245,11 @@ void DrawRoom(Room rooms, int Front_Back,Music ostSala,Player player){
         DrawTextureRec(rooms.FrontTexture, fundo, posFundo, WHITE);
 }
 
-void VerifyRooms(int *CurrentRoom, int *LastRoom, Player *player){
+void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *player){
     if (player->position.x < 0){ //Porta Esquerda
         *LastRoom = *CurrentRoom;
         *CurrentRoom += 1;
+        *CurrentEnemy = 0;
 
         if (*LastRoom == 0 && *CurrentRoom == 1){
             player->position = (Vector2) {1850, 945};
@@ -175,6 +267,7 @@ void VerifyRooms(int *CurrentRoom, int *LastRoom, Player *player){
     else if (player->position.x > 1920){ // Porta Direita
         *LastRoom = *CurrentRoom;
         *CurrentRoom -= 1;
+        *CurrentEnemy = 0;
 
         if (*LastRoom == 3 && *CurrentRoom == 2){
             player->position = (Vector2) {50, 975};

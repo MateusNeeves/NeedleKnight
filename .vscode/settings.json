@@ -10,6 +10,7 @@
         "animacao.h": "c",
         "hud.h": "c",
         "enemies.h": "c",
-        "hudmenu.h": "c"
+        "hudmenu.h": "c",
+        "string.h": "c"
     }
 }

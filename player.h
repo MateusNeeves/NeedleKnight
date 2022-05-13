@@ -6,13 +6,14 @@
 typedef struct Player {
     Vector2 position;
     Rectangle HitBox;
+    Rectangle SwordHitBox;
     float speed;
     bool canJump[2];
     bool attacking;
     bool DoubleJump;
     bool Invulnerable;
 
-    Texture2D Textures[13];
+    Texture2D *Textures;
     Texture2D CurrentTexture;
     float FrameWidth;
     int MaxFrames;
@@ -21,6 +22,8 @@ typedef struct Player {
 
     int MaxLife;
     int CurrentLife;
+
+    Sound *SoundEffects;
     
 } Player;
 

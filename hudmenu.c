@@ -6,6 +6,8 @@ void CreateMenuInfo(Menu *menuInfo){
     menuInfo->Texture = LoadTexture("Assets/FramesMenu/1.png");
 
     menuInfo->CurrentFrame = 1;
+
+    menuInfo->MenuMusic = LoadSound("Assets/Musicas/MenuMusic.mp3");
 }
 
 void CreateHud(Hud *infoHud){

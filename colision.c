@@ -58,7 +58,7 @@ void ColisaoLateral(Player **player, Room rooms, float delta){
 
         if (!(*player)->attacking && 
             platform.x + platform.width > p->x - ((*player)->FrameWidth)/4 &&
-            platform.x + platform.width < p->x - ((*player)->FrameWidth)/4 + PlayerHorzSpeed * delta * 7 &&
+            platform.x + platform.width < p->x - ((*player)->FrameWidth)/4 + PlayerHorzSpeed * delta * 5 &&
             p->y - (*player)->CurrentTexture.height <= platform.y + platform.height &&
             p->y >= platform.y)
         {
@@ -67,7 +67,7 @@ void ColisaoLateral(Player **player, Room rooms, float delta){
 
         else if (!(*player)->attacking && 
             platform.x < p->x + ((*player)->FrameWidth)/4 &&
-            platform.x >= p->x + ((*player)->FrameWidth)/4 - PlayerHorzSpeed * delta * 7 &&
+            platform.x >= p->x + ((*player)->FrameWidth)/4 - PlayerHorzSpeed * delta * 5 &&
             p->y - (*player)->CurrentTexture.height <= platform.y + platform.height &&
             p->y >= platform.y)
         {
@@ -78,16 +78,17 @@ void ColisaoLateral(Player **player, Room rooms, float delta){
     }
 }
 
-void MossChargerColision (Enemies enemy, Player *player){
+void EnemyColision (Enemies enemy, Player *player){
     float deltaTime = GetFrameTime();
     static float InvunerableTimer;
-    
+
     if(!player->Invulnerable && 
-       !player->attacking && 
+        !player->attacking && 
         player->CurrentLife > 0 && 
-        CheckCollisionRecs(enemy.HitBox , player->HitBox))
+        (CheckCollisionRecs(enemy.SwordHitBox , player->HitBox) || 
+        CheckCollisionRecs(enemy.HitBox , player->HitBox)))
     {
-        player->CurrentLife -= 1;
+        player->CurrentLife -= enemy.Damage;
         player->Invulnerable = true;
     }
 
@@ -98,6 +99,7 @@ void MossChargerColision (Enemies enemy, Player *player){
         player->Invulnerable = false;
         InvunerableTimer = 0.0f;
     }
+    
 }
 
 void PlayerAttackColision(Player player, Enemies *enemy){
@@ -105,7 +107,7 @@ void PlayerAttackColision(Player player, Enemies *enemy){
     static float InvunerableTimerE;
 
 
-    if (!enemy->Invulnerable && CheckCollisionRecs(enemy->HitBox , player.HitBox)){
+    if (!enemy->Invulnerable && CheckCollisionRecs(enemy->HitBox , player.SwordHitBox)){
         enemy->CurrentLife -= 1;
         enemy->Invulnerable = true;
     }

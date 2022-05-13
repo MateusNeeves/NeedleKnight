@@ -7,16 +7,17 @@
 typedef struct Enemies {
     Vector2 position;
     Rectangle HitBox;
+    Rectangle SwordHitBox;
     float speed;
     bool attacking;
     bool Invulnerable;
 
-    Texture2D Textures[6];
+    Texture2D *Textures;
     Texture2D CurrentTexture;
     float FrameWidth;
-    int MaxFrames;
     int CurrentFrame;
     int LastSide;
+    int Damage;
 
     int MaxLife;
     int CurrentLife;
@@ -27,14 +28,15 @@ typedef struct Room {
     Texture2D FrontTexture;
     Rectangle *platforms;
     int platformNmbr;
-    Enemies enemy;
+    Music SoundTrack;
+    Enemies enemy[2];
     int enemyNmbr;
 } Room;
 
 void CreateRooms(Room **rooms);
 
-void DrawRoom(Room rooms, int Front_Back,Music ostSala,Player player);
+void DrawRoom(Room rooms, int Front_Back, Player player);
 
-void VerifyRooms(int *CurrentRoom, int *LastRoom, Player *player);
+void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *player);
 
 #endif

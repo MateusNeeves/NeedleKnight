@@ -15,6 +15,7 @@ typedef enum GameScreen{
 typedef struct Menu{
     Texture2D Texture;
     int CurrentFrame;
+    Sound MenuMusic;
 } Menu;
 
 void CreateMenuInfo(Menu *menuInfo);
