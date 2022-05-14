@@ -64,10 +64,11 @@ void CreatePlayer(Player *player){
 
     player->SoundEffects = (Sound *) calloc (4, sizeof(Sound));
 
-    player->SoundEffects[AttackSound] = LoadSound("Assets/Musicas/PlayerEffects/PlayerAttack.wav");
-    player->SoundEffects[JumpSound] = LoadSound("Assets/Musicas/PlayerEffects/PlayerJump.wav");
-    player->SoundEffects[DeathSound] = LoadSound("Assets/Musicas/PlayerEffects/PlayerDeath.wav");
-    player->SoundEffects[WalkSound] = LoadSound("Assets/Musicas/PlayerEffects/PlayerWalk.wav");
+    player->SoundEffects[AttackSound] = LoadSound("Assets/EfeitosSonoros/PlayerAttack.wav");
+    player->SoundEffects[JumpSound] = LoadSound("Assets/EfeitosSonoros/PlayerJump.wav");
+    player->SoundEffects[DeathSound] = LoadSound("Assets/EfeitosSonoros/PlayerDeath.wav");
+    player->SoundEffects[WalkSound] = LoadSound("Assets/EfeitosSonoros/PlayerWalk.wav");
+
 }
 
 
@@ -76,13 +77,11 @@ void MovePlayer(Player **player, float delta)
     //Animacao Pulando
 
     if (IsKeyPressed(KEY_SPACE) && (*player)->canJump[0] && !(*player)->attacking){
-        PlaySound((*player)->SoundEffects[1]);
         (*player)->speed = -PlayerJumpSpeed;
         (*player)->canJump[0] = false;
         (*player)->CurrentFrame = 0;
     }
     else if (IsKeyPressed(KEY_SPACE) && (*player)->DoubleJump && !(*player)->canJump[0] && (*player)->canJump[1] && !(*player)->attacking){
-        PlaySound((*player)->SoundEffects[1]);
         (*player)->speed = -(PlayerJumpSpeed/1.15);
         (*player)->canJump[1] = false;
         (*player)->CurrentFrame = 0;
@@ -94,6 +93,7 @@ void MovePlayer(Player **player, float delta)
     if ((IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) && !(*player)->attacking){
         (*player)->position.x -= PlayerHorzSpeed * delta;
         (*player)->LastSide = Left;
+        PlaySound((*player)->SoundEffects[3]);
 
         if ((*player)->canJump[0]){
             (*player)->CurrentTexture = (*player)->Textures[RunLeft];
@@ -113,6 +113,7 @@ void MovePlayer(Player **player, float delta)
     if ((IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) && !(*player)->attacking){
         (*player)->position.x += PlayerHorzSpeed * delta;
         (*player)->LastSide = Right;
+        PlaySound((*player)->SoundEffects[3]);
 
         if ((*player)->canJump[0]){
             (*player)->CurrentTexture = (*player)->Textures[RunRight];
@@ -131,7 +132,8 @@ void MovePlayer(Player **player, float delta)
 
     if (IsKeyUp(KEY_A) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_D) && IsKeyUp(KEY_RIGHT) && !(*player)->attacking)
     {
-    
+        PauseSound((*player)->SoundEffects[3]);
+
         if ((*player)->canJump[0]){
             if ((*player)->LastSide == Left){
                 (*player)->CurrentTexture = (*player)->Textures[StandLeft];
@@ -165,7 +167,6 @@ void MovePlayer(Player **player, float delta)
     if (IsKeyPressed(KEY_Z) && IsKeyUp(KEY_A) && IsKeyUp(KEY_D) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_RIGHT) && 
             !(*player)->attacking && (*player)->canJump[0])
     {
-        PlaySound((*player)->SoundEffects[0]);
         (*player)->CurrentFrame = 0;
         (*player)->attacking = true;
         if ((*player)->LastSide == Left){

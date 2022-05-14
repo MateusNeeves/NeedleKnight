@@ -23,6 +23,14 @@ void AnimKingsMouldDeath(Enemies **enemy, int **CurrentEnemy);
 
 void AnimTheCollector(Enemies **enemy, Player **player);
 
+void AnimNightmareKing(Enemies **enemy, Player **player);
+
+void AnimNightmareKingDeath(Enemies **enemy, int **CurrentEnemy);
+
+void AnimGrimm(Enemies **enemy, Player **player);
+
+void AnimGrimmDeath(Enemies **enemy, int **CurrentEnemy);
+
 void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnemy);
 
 #endif

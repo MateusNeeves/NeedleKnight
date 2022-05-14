@@ -10,11 +10,11 @@ void CreateRooms(Room **rooms){
 
     //^ ROOM 0
 
-        (*rooms)[0].texture = LoadTexture("assets/Mapa/Mapa0.png");
+        (*rooms)[0].texture = LoadTexture("Assets/Mapa/Mapa0.png");
 
-        (*rooms)[0].FrontTexture = LoadTexture("assets/Mapa/Mapa0Frente.png");
+        (*rooms)[0].FrontTexture = LoadTexture("Assets/Mapa/Mapa0Frente.png");
 
-        (*rooms)[0].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room1.mp3");
+        (*rooms)[0].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room0.mp3");
         
         (*rooms)[0].platformNmbr = 7;
 
@@ -94,11 +94,11 @@ void CreateRooms(Room **rooms){
 
     //^ ROOM 1
 
-        (*rooms)[1].texture = LoadTexture("assets/Mapa/Mapa1.png");
+        (*rooms)[1].texture = LoadTexture("Assets/Mapa/Mapa1.png");
 
-        (*rooms)[1].FrontTexture = LoadTexture("assets/Mapa/Mapa1Frente.png");
+        (*rooms)[1].FrontTexture = LoadTexture("Assets/Mapa/Mapa1Frente.png");
 
-        (*rooms)[1].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room2.mp3");
+        (*rooms)[1].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room1.mp3");
         
         (*rooms)[1].platformNmbr = 9;
 
@@ -124,11 +124,11 @@ void CreateRooms(Room **rooms){
 
     //^ ROOM 2
 
-        (*rooms)[2].texture = LoadTexture("assets/Mapa/Mapa2.png");
+        (*rooms)[2].texture = LoadTexture("Assets/Mapa/Mapa2.png");
 
-        (*rooms)[2].FrontTexture = LoadTexture("assets/Mapa/Mapa2Frente.png");
+        (*rooms)[2].FrontTexture = LoadTexture("Assets/Mapa/Mapa2Frente.png");
 
-        (*rooms)[2].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room3.mp3");
+        (*rooms)[2].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room2.mp3");
 
         (*rooms)[2].platformNmbr = 4;
 
@@ -172,7 +172,7 @@ void CreateRooms(Room **rooms){
             (*rooms)[2].enemy[0].LastSide = Right;
 
             (*rooms)[2].enemy[0].MaxLife = 7;
-            (*rooms)[2].enemy[0].CurrentLife = 4;
+            (*rooms)[2].enemy[0].CurrentLife = 1;
             (*rooms)[2].enemy[0].Damage = 2;
 
         //^ ENEMY 1 
@@ -198,13 +198,13 @@ void CreateRooms(Room **rooms){
             (*rooms)[2].enemy[1].CurrentLife = 10;
             (*rooms)[2].enemy[1].Damage = 2;
 
-    //ROOM 3
+    //^ ROOM 3
 
-        (*rooms)[3].texture = LoadTexture("assets/Mapa/Mapa3.png");
+        (*rooms)[3].texture = LoadTexture("Assets/Mapa/Mapa3.png");
 
-        (*rooms)[3].FrontTexture = LoadTexture("assets/Mapa/Mapa3Frente.png");
+        (*rooms)[3].FrontTexture = LoadTexture("Assets/Mapa/Mapa3Frente.png");
         
-        (*rooms)[3].SoundTrack = LoadMusicStream("Assets/Musicas/Rooms-ST/ST-Room4.mp3");
+        (*rooms)[3].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room3.mp3");
 
         (*rooms)[3].platformNmbr = 7;
 
@@ -223,9 +223,64 @@ void CreateRooms(Room **rooms){
         for (int i = 0 ; i < (*rooms)[3].platformNmbr ; i++)
             (*rooms)[3].platforms[i] = platforms3[i];
 
-        (*rooms)[3].enemyNmbr = 0;
+        (*rooms)[3].enemyNmbr = 2;
+
+        //^ ENEMY 0 
+            (*rooms)[3].enemy[0].position = (Vector2) {185, 850};
+            (*rooms)[3].enemy[0].attacking = false;
+            (*rooms)[3].enemy[0].Invulnerable = false;
 
 
+            (*rooms)[3].enemy[0].Textures = (Texture2D*) calloc (9, sizeof(Texture2D));
+
+
+            (*rooms)[3].enemy[0].Textures[0] = LoadTexture("Assets/Inimigos/NightmareKing/Idle.png");
+            (*rooms)[3].enemy[0].Textures[1] = LoadTexture("Assets/Inimigos/NightmareKing/DisappearingLeft.png");
+            (*rooms)[3].enemy[0].Textures[2] = LoadTexture("Assets/Inimigos/NightmareKing/DisappearingRight.png");
+            (*rooms)[3].enemy[0].Textures[3] = LoadTexture("Assets/Inimigos/NightmareKing/AppearingLeft.png");
+            (*rooms)[3].enemy[0].Textures[4] = LoadTexture("Assets/Inimigos/NightmareKing/AppearingRight.png");
+            (*rooms)[3].enemy[0].Textures[5] = LoadTexture("Assets/Inimigos/NightmareKing/AttackLeft.png");
+            (*rooms)[3].enemy[0].Textures[6] = LoadTexture("Assets/Inimigos/NightmareKing/AttackRight.png");
+            (*rooms)[3].enemy[0].Textures[7] = LoadTexture("Assets/Inimigos/NightmareKing/DeathLeft.png");
+            (*rooms)[3].enemy[0].Textures[8] = LoadTexture("Assets/Inimigos/NightmareKing/DeathRight.png");
+
+
+            (*rooms)[3].enemy[0].CurrentTexture =  (*rooms)[3].enemy[0].Textures[0];
+
+            (*rooms)[3].enemy[0].FrameWidth = (*rooms)[3].enemy[0].Textures[0].width/4.0;
+            (*rooms)[3].enemy[0].CurrentFrame = 0;
+            (*rooms)[3].enemy[0].LastSide = Right;
+
+            (*rooms)[3].enemy[0].MaxLife = 10;
+            (*rooms)[3].enemy[0].CurrentLife = 1;
+            (*rooms)[3].enemy[0].Damage = 2;
+
+
+        //^ ENEMY 1 
+            (*rooms)[3].enemy[1].position = (Vector2) {0, 0};
+            (*rooms)[3].enemy[1].attacking = false;
+            (*rooms)[3].enemy[1].Invulnerable = false;
+
+
+            (*rooms)[3].enemy[1].Textures = (Texture2D*) calloc (10, sizeof(Texture2D));
+
+
+            (*rooms)[3].enemy[1].Textures[0] = LoadTexture("Assets/Inimigos/Grimm/BegginingLeft.png");
+            (*rooms)[3].enemy[1].Textures[1] = LoadTexture("Assets/Inimigos/Grimm/BegginingRight.png");
+            (*rooms)[3].enemy[1].Textures[2] = LoadTexture("Assets/Inimigos/Grimm/DisappearingLeft.png");
+            (*rooms)[3].enemy[1].Textures[3] = LoadTexture("Assets/Inimigos/Grimm/DisappearingRight.png");
+            (*rooms)[3].enemy[1].Textures[4] = LoadTexture("Assets/Inimigos/Grimm/AppearingLeft.png");
+            (*rooms)[3].enemy[1].Textures[5] = LoadTexture("Assets/Inimigos/Grimm/AppearingRight.png");
+            (*rooms)[3].enemy[1].Textures[6] = LoadTexture("Assets/Inimigos/Grimm/AttackLeft.png");
+            (*rooms)[3].enemy[1].Textures[7] = LoadTexture("Assets/Inimigos/Grimm/AttackRight.png");
+            (*rooms)[3].enemy[1].Textures[8] = LoadTexture("Assets/Inimigos/Grimm/DeathLeft.png");
+            (*rooms)[3].enemy[1].Textures[9] = LoadTexture("Assets/Inimigos/Grimm/DeathRight.png");
+            
+            (*rooms)[3].enemy[1].CurrentFrame = 0;
+
+            (*rooms)[3].enemy[1].MaxLife = 10;
+            (*rooms)[3].enemy[1].CurrentLife = 1;
+            (*rooms)[3].enemy[1].Damage = 2;
 }
 
 void DrawRoom(Room rooms, int Front_Back,Player player){

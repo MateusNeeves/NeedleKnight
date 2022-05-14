@@ -11,7 +11,7 @@
 #define Right 1
 #define DJumpLeftEffect 10
 #define DJumpRightEffect 11
-#define DamageEffect 1
+#define DamageEffect 12
 
 
 void AnimMenu(Menu *menuInfo, float *Timer){
@@ -98,8 +98,8 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
         player->CurrentFrame += 1;
     } 
 
-    //if (player->canJump && !player->attacking && (player->CurrentFrame == 2 || player->CurrentFrame == 6))
-        //PlaySound(player->SoundEffects[3]);
+    if (player->canJump && !player->attacking && (player->CurrentFrame == 2 || player->CurrentFrame == 6))
+        PlaySound(player->SoundEffects[3]);
 
     player->CurrentFrame = player->CurrentFrame % player->MaxFrames; 
 
@@ -119,7 +119,6 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
 }
 
 void AnimPlayerDeath(Player *player, float *Timer, Room rooms){
-    ResumeSound((*player).SoundEffects[2]);
     float deltaTime = GetFrameTime();
     static int flag = 1;
 
@@ -357,10 +356,10 @@ void AnimKingsMould(Enemies **enemy, Player **player){
 
 void AnimKingsMouldDeath(Enemies **enemy, int **CurrentEnemy){
     static int flag = 0;
-    static float Timer2 = 0.0f;
+    static float Timer = 0.0f;
     float deltaTime = GetFrameTime();
 
-    Timer2 += deltaTime;
+    Timer += deltaTime;
     
     if (flag == 0){
         if ((*enemy)->LastSide == Left)
@@ -372,8 +371,8 @@ void AnimKingsMouldDeath(Enemies **enemy, int **CurrentEnemy){
         (*enemy)->CurrentFrame = 0;
         flag = 1;
     }
-    if (Timer2 >= 0.1f){ 
-        Timer2 = 0.0f;
+    if (Timer >= 0.1f){ 
+        Timer = 0.0f;
         (*enemy)->CurrentFrame += 1;
     }
 
@@ -482,10 +481,10 @@ void AnimTheCollector(Enemies **enemy, Player **player){
 
 void AnimTheCollectorDeath(Enemies **enemy){
     static int flag = 0;
-    static float Timer2 = 0.0f;
+    static float Timer = 0.0f;
     float deltaTime = GetFrameTime();
 
-    Timer2 += deltaTime;
+    Timer += deltaTime;
     
     if (flag == 0){
         if ((*enemy)->LastSide == Left)
@@ -497,8 +496,8 @@ void AnimTheCollectorDeath(Enemies **enemy){
         (*enemy)->CurrentFrame = 0;
         flag = 1;
     }
-    if (Timer2 >= 0.1f){ 
-        Timer2 = 0.0f;
+    if (Timer >= 0.1f){ 
+        Timer = 0.0f;
         (*enemy)->CurrentFrame += 1;
     }
 
@@ -516,6 +515,287 @@ void AnimTheCollectorDeath(Enemies **enemy){
         Vector2 enemyRecPosition = {(*enemy)->position.x - (*enemy)->FrameWidth/2 , 695};
 
         DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, WHITE); 
+    }
+}
+
+void AnimNightmareKing(Enemies **enemy, Player **player){
+    float deltaTime = GetFrameTime();
+    static int cont = 0;
+    static int action = 0;
+    static float Timer = 0.0f;
+
+    Timer += deltaTime;
+
+    if (action == 0 && Timer >= 0.1f){
+        Timer = 0.0f;
+        (*enemy)->CurrentFrame += 1;
+    } 
+
+    if ((action == 1 || action == 2 || action == 3) && Timer >= 0.07f){
+        Timer = 0.0f;
+        (*enemy)->CurrentFrame += 1;
+    } 
+
+    if (action == 0 && (*player)->position.y > 850){
+        action = 1;
+        (*enemy)->CurrentFrame = 0;
+    }
+
+    if (action == 1 && (*enemy)->CurrentFrame == 6){
+        action = 2;
+        (*enemy)->CurrentFrame = 0;
+    }
+
+    if (action == 1){ //~ Desaparecendo
+        if ((*player)->position.x >= (*enemy)->position.x){    // Right
+            (*enemy)->CurrentTexture = (*enemy)->Textures[2];
+            (*enemy)->LastSide = Right;
+        }
+        else{                                                 // Left
+            (*enemy)->CurrentTexture = (*enemy)->Textures[1];
+            (*enemy)->LastSide = Left;
+        }
+        (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/6.0;
+    }
+
+    if (action == 2 && (*enemy)->CurrentFrame == 7){
+        action = 3;
+        (*enemy)->CurrentFrame = 0;
+    }
+
+    if (action == 2 && (*enemy)->CurrentFrame == 0){ //~ Reaparecendo
+        if ((*player)->position.x >= (*enemy)->position.x){    // Right
+            (*enemy)->CurrentTexture = (*enemy)->Textures[4];
+            (*enemy)->LastSide = Right;
+            (*enemy)->position.y = (*player)->position.y;
+            (*enemy)->position.x = (*player)->position.x - 155;
+        }
+        else{                                                 // Left
+            (*enemy)->CurrentTexture = (*enemy)->Textures[3];
+            (*enemy)->LastSide = Left;
+            (*enemy)->position.y = (*player)->position.y;
+            (*enemy)->position.x = (*player)->position.x + 155;
+        }
+        (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/7.0;
+    }
+
+    if ((*enemy)->position.x < 310 && (*enemy)->position.y > 850){
+        (*enemy)->position.x = 510;
+    }
+    else if ((*enemy)->position.x > 1630 && (*enemy)->position.y > 850){
+        (*enemy)->position.x = 1410;
+    }
+
+    if (action == 3 && (*enemy)->CurrentFrame == 9){
+        action = 1;
+        (*enemy)->attacking = false;
+        (*enemy)->CurrentFrame = 0;
+    }
+
+    if (action == 3){  //~ Atacando
+        if ((*player)->position.x >= (*enemy)->position.x){    // Right
+            (*enemy)->CurrentTexture = (*enemy)->Textures[6];
+            (*enemy)->LastSide = Right;
+            (*enemy)->attacking = true;
+        }
+        else{                                                 // Left
+            (*enemy)->CurrentTexture = (*enemy)->Textures[5];
+            (*enemy)->LastSide = Left;
+            (*enemy)->attacking = true;
+        }
+        (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/9.0;
+    }
+
+    Rectangle enemyRec = {(*enemy)->FrameWidth * (*enemy)->CurrentFrame , 0, (*enemy)->FrameWidth , (*enemy)->CurrentTexture.height};
+                    
+    Vector2 enemyRecPosition = {(*enemy)->position.x - (*enemy)->FrameWidth/2 , (*enemy)->position.y - (*enemy)->CurrentTexture.height + 15};
+
+     if ((*enemy)->Invulnerable && cont % 10 < 8){
+        DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, BLACK); 
+        cont++;
+    }
+    else{ 
+        DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, WHITE); 
+        cont++;
+    }
+}
+
+void AnimNightmareKingDeath(Enemies **enemy, int **CurrentEnemy){
+    static int flag = 0;
+    static float Timer = 0.0f;
+    float deltaTime = GetFrameTime();
+
+    Timer += deltaTime;
+    
+    if (flag == 0){
+        if ((*enemy)->LastSide == Left)
+            (*enemy)->CurrentTexture = (*enemy)->Textures[7];
+        else
+            (*enemy)->CurrentTexture = (*enemy)->Textures[8];
+
+        (*enemy)->FrameWidth = (*enemy)->Textures[7].width/5;
+        (*enemy)->CurrentFrame = 0;
+        flag = 1;
+    }
+    if (Timer >= 0.1f){ 
+        Timer = 0.0f;
+        (*enemy)->CurrentFrame += 1;
+    }
+
+    if ((*enemy)->CurrentFrame < 5){
+        Rectangle enemyRec = {(*enemy)->FrameWidth * (*enemy)->CurrentFrame , 0, (*enemy)->FrameWidth , (*enemy)->CurrentTexture.height};
+                        
+        Vector2 enemyRecPosition = {(*enemy)->position.x - (*enemy)->FrameWidth/2 , (*enemy)->position.y - (*enemy)->CurrentTexture.height + 20};
+
+        DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, WHITE); 
+    }
+    else{
+        (*enemy)->position = (Vector2) {0, 0};
+        *(*CurrentEnemy) = 1;
+    }
+}
+
+void AnimGrimm(Enemies **enemy, Player **player){
+    float deltaTime = GetFrameTime();
+    static int cont = 0;
+    static int action = 0;
+    static float Timer = 0.0f;
+    static int loopCounter = 0;
+
+    Timer += deltaTime;
+
+    if (action != 3 && Timer >= 0.08f){
+        Timer = 0.0f;
+        (*enemy)->CurrentFrame += 1;
+    } 
+
+    if (action == 3 && Timer >= 0.05f){
+        Timer = 0.0f;
+        (*enemy)->CurrentFrame += 1;
+    }
+
+    if (action == 0 && (*enemy)->CurrentFrame == 9){
+        loopCounter++;
+        (*enemy)->CurrentFrame = 6;
+    }
+
+    if (action == 0 && loopCounter == 4){
+        (*enemy)->CurrentFrame = 0;
+        action = 1;
+    }
+
+    if (action == 1 && (*enemy)->CurrentFrame == 5){
+        action = 2;
+        (*enemy)->CurrentFrame = 0;
+    }
+
+    if (action == 1){ //~ Desaparecendo
+        if ((*player)->position.x >= (*enemy)->position.x){    // Right
+            (*enemy)->CurrentTexture = (*enemy)->Textures[3];
+            (*enemy)->LastSide = Right;
+        }
+        else{                                                 // Left
+            (*enemy)->CurrentTexture = (*enemy)->Textures[2];
+            (*enemy)->LastSide = Left;
+        }
+        (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/5.0;
+    }
+
+    if (action == 2 && (*enemy)->CurrentFrame == 5){
+        action = 3;
+        (*enemy)->CurrentFrame = 0;
+    }
+
+    if (action == 2 && (*enemy)->CurrentFrame == 0){ //~ Reaparecendo
+        if ((*player)->position.x >= (*enemy)->position.x){    // Right
+            (*enemy)->CurrentTexture = (*enemy)->Textures[5];
+            (*enemy)->LastSide = Right;
+            (*enemy)->position.y = (*player)->position.y;
+            (*enemy)->position.x = (*player)->position.x - 155;
+        }
+        else{                                                 // Left
+            (*enemy)->CurrentTexture = (*enemy)->Textures[4];
+            (*enemy)->LastSide = Left;
+            (*enemy)->position.y = (*player)->position.y;
+            (*enemy)->position.x = (*player)->position.x + 155;
+        }
+        (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/5.0;
+    }
+
+    //NAO ENTRAR NA PAREDE vvv
+    if ((*enemy)->position.x < 310 && (*enemy)->position.y > 850){
+        (*enemy)->position.x = 510;
+    }
+    else if ((*enemy)->position.x > 1630 && (*enemy)->position.y > 850){
+        (*enemy)->position.x = 1410;
+    }
+
+
+    if (action == 3 && (*enemy)->CurrentFrame == 10){
+        action = 1;
+        (*enemy)->attacking = false;
+        (*enemy)->CurrentFrame = 0;
+    }
+
+    if (action == 3){  //~ Atacando
+        if ((*player)->position.x >= (*enemy)->position.x){    // Right
+            (*enemy)->CurrentTexture = (*enemy)->Textures[7];
+            (*enemy)->LastSide = Right;
+            (*enemy)->attacking = true;
+        }
+        else{                                                 // Left
+            (*enemy)->CurrentTexture = (*enemy)->Textures[6];
+            (*enemy)->LastSide = Left;
+            (*enemy)->attacking = true;
+        }
+        (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/10.0;
+    }
+
+    Rectangle enemyRec = {(*enemy)->FrameWidth * (*enemy)->CurrentFrame , 0, (*enemy)->FrameWidth , (*enemy)->CurrentTexture.height};
+                    
+    Vector2 enemyRecPosition = {(*enemy)->position.x - (*enemy)->FrameWidth/2 , (*enemy)->position.y - (*enemy)->CurrentTexture.height + 15};
+
+     if ((*enemy)->Invulnerable && cont % 10 < 8){
+        DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, BLACK); 
+        cont++;
+    }
+    else{ 
+        DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, WHITE); 
+        cont++;
+    }
+}
+
+void AnimGrimmDeath(Enemies **enemy){
+    static int flag = 0;
+    static float Timer = 0.0f;
+    float deltaTime = GetFrameTime();
+
+    Timer += deltaTime;
+    
+    if (flag == 0){
+        if ((*enemy)->LastSide == Left)
+            (*enemy)->CurrentTexture = (*enemy)->Textures[8];
+        else
+            (*enemy)->CurrentTexture = (*enemy)->Textures[9];
+
+        (*enemy)->FrameWidth = (*enemy)->Textures[8].width/6.0;
+        (*enemy)->CurrentFrame = 0;
+        flag = 1;
+    }
+    if (Timer >= 0.1f){ 
+        Timer = 0.0f;
+        (*enemy)->CurrentFrame += 1;
+    }
+
+    if ((*enemy)->CurrentFrame < 6){
+        Rectangle enemyRec = {(*enemy)->FrameWidth * (*enemy)->CurrentFrame , 0, (*enemy)->FrameWidth , (*enemy)->CurrentTexture.height};
+                        
+        Vector2 enemyRecPosition = {(*enemy)->position.x - (*enemy)->FrameWidth/2 , (*enemy)->position.y - (*enemy)->CurrentTexture.height + 20};
+
+        DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, WHITE); 
+    }
+    else{
+        (*enemy)->position = (Vector2) {0, 0};
     }
 }
 
@@ -621,4 +901,100 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
         }
                 
     }
+
+    if (CurrentRoom == 3){ // ^MAPA 3
+
+        if (*CurrentEnemy == 0){
+            if (enemy->CurrentLife > 0){
+                AnimNightmareKing(&enemy, &player); 
+                
+                enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
+        
+                enemy->HitBox = (Rectangle) {enemy->position.x - 60,
+                                             enemy->position.y - 240,
+                                             100, 230};
+
+                if (enemy->LastSide == Left && enemy->attacking){
+                    if (enemy->CurrentFrame >= 4 && enemy->CurrentFrame <= 6){
+                        enemy->SwordHitBox = (Rectangle) {enemy->position.x - enemy->FrameWidth/2,
+                                                          enemy->position.y - enemy->CurrentTexture.height + 100,
+                                                          200, 230};
+                    }
+                    enemy->HitBox = (Rectangle) {enemy->position.x - 50,
+                                                  enemy->position.y - 170,
+                                                  125, 145};
+                }
+                else if (enemy->LastSide == Right && enemy->attacking){
+                    if (enemy->CurrentFrame >= 4 && enemy->CurrentFrame <= 6){
+                        enemy->SwordHitBox = (Rectangle) {enemy->position.x,
+                                                          enemy->position.y - enemy->CurrentTexture.height + 100,
+                                                          200, 230};
+                    }
+                    enemy->HitBox = (Rectangle) {enemy->position.x - 50,
+                                                 enemy->position.y - 170,
+                                                 125, 145};
+                }
+            }
+             else{
+                AnimNightmareKingDeath(&enemy, &CurrentEnemy);
+                enemy->HitBox = (Rectangle) {0, 0, 0, 0};
+            } 
+        }
+        
+        else{
+            if (enemy->CurrentLife > 0){
+                AnimGrimm(&enemy, &player); 
+                
+                 enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
+        
+                enemy->HitBox = (Rectangle) {enemy->position.x - 60,
+                                             enemy->position.y - 240,
+                                             100, 230};
+
+                if (enemy->LastSide == Left && enemy->attacking){
+                    if (enemy->CurrentFrame >= 5 && enemy->CurrentFrame <= 8){
+                        enemy->SwordHitBox = (Rectangle) {enemy->position.x - enemy->FrameWidth/2,
+                                                          enemy->position.y - enemy->CurrentTexture.height + 100,
+                                                          200, 230};
+                    }
+                    enemy->HitBox = (Rectangle) {enemy->position.x - 50,
+                                                  enemy->position.y - 170,
+                                                  125, 145};
+                }
+                else if (enemy->LastSide == Right && enemy->attacking){
+                    if (enemy->CurrentFrame >= 5 && enemy->CurrentFrame <= 8){
+                        enemy->SwordHitBox = (Rectangle) {enemy->position.x,
+                                                          enemy->position.y - enemy->CurrentTexture.height + 100,
+                                                          200, 230};
+                    }
+                    enemy->HitBox = (Rectangle) {enemy->position.x - 50,
+                                                 enemy->position.y - 170,
+                                                 125, 145};
+                } 
+            }
+             else{
+                AnimGrimmDeath(&enemy);
+                enemy->HitBox = (Rectangle) {0, 0, 0, 0};
+            } 
+        } 
+    }
 } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//~pronto
