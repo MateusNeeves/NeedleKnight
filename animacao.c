@@ -51,7 +51,7 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
                                 
     player->SwordHitBox = (Rectangle) {0, 0, 0, 0};
  
-    if (player->attacking){
+    if (player->attacking){        
         if (player->LastSide == Left){
             player->SwordHitBox = (Rectangle) {player->position.x - player->FrameWidth/2 + 40,
                                                player->position.y - player->CurrentTexture.height + 40,
@@ -81,8 +81,11 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
         player->attacking = false;
     }
 
-    if (*LastMove != *CurrentMove)
+    if (*LastMove != *CurrentMove){
         player->CurrentFrame = 0;
+        if (!player->attacking && player->canJump[0])
+            PlaySound(player->SoundEffects[3]);
+    }
 
     if (!player->canJump[1] && player->CurrentFrame < 1){
         if (player->LastSide == Left)
@@ -130,6 +133,7 @@ void AnimPlayerDeath(Player *player, float *Timer, Room rooms){
         player->MaxFrames = (int) (player->Textures[8].width / (int) player->FrameWidth);
         player->CurrentFrame = 0;
         flag = 0;
+        PlaySound(player->SoundEffects[2]);
     }
 
     else if (player->LastSide == 1 && flag == 1){
@@ -138,6 +142,7 @@ void AnimPlayerDeath(Player *player, float *Timer, Room rooms){
         player->MaxFrames = (int) (player->Textures[9].width / (int) player->FrameWidth);
         player->CurrentFrame = 0;
         flag = 0;
+        PlaySound(player->SoundEffects[2]);
     }
 
     *Timer += GetFrameTime();
@@ -156,48 +161,53 @@ void AnimPlayerDeath(Player *player, float *Timer, Room rooms){
     DrawTextureRec(player->CurrentTexture, playerRec, playerRecPosition, WHITE);
 }
 
-void AnimMossCharger(Enemies **enemy){
+void AnimMossCharger(Enemies **enemy, int CurrentEnemy){
     float deltaTime = GetFrameTime();
     static int cont = 0;
-    static int flag = 0;
     static int action = 1;
     static float Timer = 0.0f;
     static int distance = 0;
+    static int next = 0;
     static Vector2 savePosition;
 
     Timer += deltaTime;
 
-    if ((*enemy)->CurrentLife > 9 && flag == 0){
+    if (CurrentEnemy == 1 && next == 0){
+        next = 1;
+        cont = 1;
         action = 1;
         Timer = 0.0f;
         distance = 0;
-        cont = 0;
-        flag = 1;
     }
 
-    if (action != 4 && Timer >= 0.09f){ //0.13
+    if (action != 4 && Timer >= 0.09f){
         Timer = 0.0f;
         (*enemy)->CurrentFrame += 1;
-    } 
+    }
 
-    if ((*enemy)->CurrentFrame == 6 && action == 1){
+    if (action == 1 && (*enemy)->CurrentFrame == 0)
+        PlaySound((*enemy)->SoundEffects[1]);
+
+
+    if (action == 1 && (*enemy)->CurrentFrame == 6){
         (*enemy)->CurrentTexture =  (*enemy)->Textures[2 +  (*enemy)->LastSide];
         (*enemy)->FrameWidth =  (*enemy)->CurrentTexture.width/4.0;
         (*enemy)->CurrentFrame = 0;
         action = 2;
+        PlaySound((*enemy)->SoundEffects[2]);
     }
 
-    if (distance > 1200 && action == 2){
-        (*enemy)->CurrentTexture = (*enemy)->Textures[4 + (*enemy)->LastSide];
-        (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/12.0;
-        (*enemy)->CurrentFrame = 0;
-        action = 3;
-    }
 
-    if ((*enemy)->CurrentFrame == 12 && action == 3){
-        action = 4;
-        savePosition = (*enemy)->position;
-        (*enemy)->position = (Vector2) {-1000,-1000};
+    if (action == 3){
+        if ((*enemy)->CurrentFrame == 0){
+            StopSound((*enemy)->SoundEffects[2]);
+            PlaySound((*enemy)->SoundEffects[3]);
+        }
+        else if ((*enemy)->CurrentFrame == 12){
+            action = 4;
+            savePosition = (*enemy)->position;
+            (*enemy)->position = (Vector2) {-1000,-1000};
+        }
     }
 
     if (action == 2){
@@ -206,6 +216,13 @@ void AnimMossCharger(Enemies **enemy){
             (*enemy)->position.x -= ((*enemy)->speed * deltaTime);
         else
             (*enemy)->position.x += ((*enemy)->speed * deltaTime);
+
+        if (distance > 1200){
+            (*enemy)->CurrentTexture = (*enemy)->Textures[4 + (*enemy)->LastSide];
+            (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/12.0;
+            (*enemy)->CurrentFrame = 0;
+            action = 3;
+        }
     }
 
 
@@ -254,6 +271,8 @@ void AnimMossChargerDeath(Enemies **enemy, int **CurrentEnemy, float *Timer){
         (*enemy)->FrameWidth = (*enemy)->Textures[4].width/12;
         (*enemy)->CurrentFrame = 0;
         flag = 1;
+        StopSound((*enemy)->SoundEffects[2]);
+        PlaySound((*enemy)->SoundEffects[3]);
     }
 
     if (Timer2 >= 0.09f){ 
@@ -269,9 +288,13 @@ void AnimMossChargerDeath(Enemies **enemy, int **CurrentEnemy, float *Timer){
         DrawTextureRec((*enemy)->CurrentTexture, enemyRec, enemyRecPosition, WHITE); 
     }
     else{
+        if (*(*CurrentEnemy) == 0)
+            flag = 0;
+
         (*enemy)->position = (Vector2) {0, 0};
         *(*CurrentEnemy) = 1;
         *Timer = 0;
+        (*enemy)->CurrentFrame = 0;
     }
 
 }
@@ -300,6 +323,7 @@ void AnimKingsMould(Enemies **enemy, Player **player){
     if (action == 1 && (*enemy)->CurrentFrame == 6){
         loopCounter += 1;
         (*enemy)->CurrentFrame = 1;
+        PlaySound((*enemy)->SoundEffects[1]);
     }
 
     if (action == 1 && loopCounter == 3){
@@ -307,7 +331,12 @@ void AnimKingsMould(Enemies **enemy, Player **player){
         (*enemy)->CurrentFrame = 0;
     }
 
-    if (action == 2 && abs((*player)->position.x - (*enemy)->position.x) > 155 && !(*enemy)->attacking){
+    if (action == 3 && (*enemy)->CurrentFrame == 15){
+        (*enemy)->attacking = false;
+        action = 2;
+    }
+    
+    if (action == 2 && abs((*player)->position.x - (*enemy)->position.x) > 155){
 
         if ((*player)->position.x >= (*enemy)->position.x){ // Right
             (*enemy)->CurrentTexture = (*enemy)->Textures[3];
@@ -322,7 +351,7 @@ void AnimKingsMould(Enemies **enemy, Player **player){
         (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/8.0;
     }
 
-    else if (action == 2 && abs((*player)->position.x - (*enemy)->position.x) <= 155 && !(*enemy)->attacking){
+    else if (action == 2 && abs((*player)->position.x - (*enemy)->position.x) <= 155){
         if ((*player)->position.x >= (*enemy)->position.x){    // Right
             (*enemy)->CurrentTexture = (*enemy)->Textures[5];
             (*enemy)->LastSide = Right;
@@ -334,11 +363,12 @@ void AnimKingsMould(Enemies **enemy, Player **player){
         (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/15.0;
         (*enemy)->attacking = true;
         (*enemy)->CurrentFrame = 0;
+        action = 3;
     }
 
-    if (action == 2 && (*enemy)->attacking && (*enemy)->CurrentFrame == 15){
-        (*enemy)->attacking = false;
-    }
+
+    if (action == 3 && ((*enemy)->CurrentFrame == 7 || (*enemy)->CurrentFrame == 13))
+        PlaySound((*enemy)->SoundEffects[2]);
 
     Rectangle enemyRec = {(*enemy)->FrameWidth * (*enemy)->CurrentFrame , 0, (*enemy)->FrameWidth , (*enemy)->CurrentTexture.height};
                     
@@ -389,7 +419,7 @@ void AnimKingsMouldDeath(Enemies **enemy, int **CurrentEnemy){
     }
 }
 
-void AnimTheCollector(Enemies **enemy, Player **player){
+void AnimTheCollector(Enemies **enemy, Player **player, int *inAnim){
     float deltaTime = GetFrameTime();
     static int action = 0;
     static int loopCounter = 0;
@@ -402,14 +432,18 @@ void AnimTheCollector(Enemies **enemy, Player **player){
         Timer = 0.0f;
         (*enemy)->CurrentFrame += 1;
     }
+    if (action == 0)
+        *inAnim = 1;
 
-    
+    if (action == 0 && (*enemy)->CurrentFrame == 2)
+        PlaySound((*enemy)->SoundEffects[1]);
+
     if (action == 0 && (*enemy)->CurrentFrame == 6){
         loopCounter++;
         (*enemy)->CurrentFrame = 3;
     }
 
-    if (loopCounter == 3 && action == 0){
+    if (loopCounter == 12 && action == 0){
         action = 1;
         (*enemy)->CurrentTexture = (*enemy)->Textures[2 + (*enemy)->LastSide];
         (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/10.0;
@@ -425,8 +459,10 @@ void AnimTheCollector(Enemies **enemy, Player **player){
             Timer = 0.0f;
         }
 
-        if ((*enemy)->CurrentFrame == 3)
+        if ((*enemy)->CurrentFrame == 3){
             (*enemy)->position.y -= 10;
+            PlaySound((*enemy)->SoundEffects[2]);
+        }
         else if ((*enemy)->CurrentFrame == 4)
             (*enemy)->position.y -= 5;
         else if ((*enemy)->CurrentFrame == 5)
@@ -495,6 +531,7 @@ void AnimTheCollectorDeath(Enemies **enemy){
         (*enemy)->FrameWidth = (*enemy)->Textures[4].width/10;
         (*enemy)->CurrentFrame = 0;
         flag = 1;
+        PlaySound((*enemy)->SoundEffects[3]);
     }
     if (Timer >= 0.1f){ 
         Timer = 0.0f;
@@ -541,6 +578,9 @@ void AnimNightmareKing(Enemies **enemy, Player **player){
         (*enemy)->CurrentFrame = 0;
     }
 
+    if (action == 1 && (*enemy)->CurrentFrame == 0)
+        PlaySound((*enemy)->SoundEffects[1]);
+
     if (action == 1 && (*enemy)->CurrentFrame == 6){
         action = 2;
         (*enemy)->CurrentFrame = 0;
@@ -557,6 +597,9 @@ void AnimNightmareKing(Enemies **enemy, Player **player){
         }
         (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/6.0;
     }
+
+    if (action == 2 && (*enemy)->CurrentFrame == 0)
+        PlaySound((*enemy)->SoundEffects[2]);
 
     if (action == 2 && (*enemy)->CurrentFrame == 7){
         action = 3;
@@ -585,6 +628,9 @@ void AnimNightmareKing(Enemies **enemy, Player **player){
     else if ((*enemy)->position.x > 1630 && (*enemy)->position.y > 850){
         (*enemy)->position.x = 1410;
     }
+
+    if (action == 3 && (*enemy)->CurrentFrame == 0)
+        PlaySound((*enemy)->SoundEffects[3]);
 
     if (action == 3 && (*enemy)->CurrentFrame == 9){
         action = 1;
@@ -636,6 +682,7 @@ void AnimNightmareKingDeath(Enemies **enemy, int **CurrentEnemy){
         (*enemy)->FrameWidth = (*enemy)->Textures[7].width/5;
         (*enemy)->CurrentFrame = 0;
         flag = 1;
+        PlaySound((*enemy)->SoundEffects[4]);
     }
     if (Timer >= 0.1f){ 
         Timer = 0.0f;
@@ -674,17 +721,25 @@ void AnimGrimm(Enemies **enemy, Player **player){
         (*enemy)->CurrentFrame += 1;
     }
 
+    if (action == 0 && (*enemy)->CurrentFrame == 5)
+        PlaySound((*enemy)->SoundEffects[1]);
+
     if (action == 0 && (*enemy)->CurrentFrame == 9){
         loopCounter++;
         (*enemy)->CurrentFrame = 6;
     }
 
     if (action == 0 && loopCounter == 4){
+        //StopSound((*enemy)->SoundEffects[0]);
         (*enemy)->CurrentFrame = 0;
         action = 1;
     }
 
+    if (action == 1 && (*enemy)->CurrentFrame == 0)
+        PlaySound((*enemy)->SoundEffects[2]);
+
     if (action == 1 && (*enemy)->CurrentFrame == 5){
+        //StopSound((*enemy)->SoundEffects[1]);
         action = 2;
         (*enemy)->CurrentFrame = 0;
     }
@@ -703,8 +758,11 @@ void AnimGrimm(Enemies **enemy, Player **player){
 
     if (action == 2 && (*enemy)->CurrentFrame == 5){
         action = 3;
+        //StopSound((*enemy)->SoundEffects[2]);
         (*enemy)->CurrentFrame = 0;
     }
+
+
 
     if (action == 2 && (*enemy)->CurrentFrame == 0){ //~ Reaparecendo
         if ((*player)->position.x >= (*enemy)->position.x){    // Right
@@ -720,6 +778,7 @@ void AnimGrimm(Enemies **enemy, Player **player){
             (*enemy)->position.x = (*player)->position.x + 155;
         }
         (*enemy)->FrameWidth = (*enemy)->CurrentTexture.width/5.0;
+        PlaySound((*enemy)->SoundEffects[3]);
     }
 
     //NAO ENTRAR NA PAREDE vvv
@@ -730,6 +789,8 @@ void AnimGrimm(Enemies **enemy, Player **player){
         (*enemy)->position.x = 1410;
     }
 
+    if (action == 3 && (*enemy)->CurrentFrame == 0)
+        PlaySound((*enemy)->SoundEffects[4]);
 
     if (action == 3 && (*enemy)->CurrentFrame == 10){
         action = 1;
@@ -781,6 +842,7 @@ void AnimGrimmDeath(Enemies **enemy){
         (*enemy)->FrameWidth = (*enemy)->Textures[8].width/6.0;
         (*enemy)->CurrentFrame = 0;
         flag = 1;
+        PlaySound((*enemy)->SoundEffects[5]);
     }
     if (Timer >= 0.1f){ 
         Timer = 0.0f;
@@ -808,7 +870,7 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
 
         if (Timer > 2.0f){
             if(enemy->CurrentLife > 0){
-                AnimMossCharger(&enemy);
+                AnimMossCharger(&enemy, *CurrentEnemy);
                 if(*CurrentEnemy == 0){
                     enemy->HitBox = (Rectangle) {enemy->position.x - enemy->FrameWidth/2,
                                                  enemy->position.y - enemy->CurrentTexture.height + 50,
@@ -845,12 +907,10 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
                 AnimKingsMould(&enemy, &player); 
 
                 if (enemy->LastSide == Left){
-                    enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
-            
-                    enemy->HitBox = (Rectangle) {enemy->position.x,
-                                                 enemy->position.y - enemy->CurrentTexture.height + 120,
-                                                 130, 150};
                     if (enemy->attacking){
+
+                        enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
+
                         if(enemy->CurrentFrame == 7 || enemy->CurrentFrame == 13){
                             enemy->SwordHitBox = (Rectangle) {enemy->position.x - enemy->FrameWidth/2,
                                                               enemy->position.y - enemy->CurrentTexture.height + 100,
@@ -860,14 +920,17 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
                                                      enemy->position.y - 170,
                                                      125, 145};
                     }
+                    else{
+                        enemy->HitBox = (Rectangle) {enemy->position.x,
+                                                    enemy->position.y - enemy->CurrentTexture.height + 120,
+                                                    130, 150};
+                    }
                 }
                 else{
-                    enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
-
-                    enemy->HitBox = (Rectangle) {enemy->position.x - enemy->FrameWidth/2,
-                                                 enemy->position.y - enemy->CurrentTexture.height + 120,
-                                                 130, 150};
                     if (enemy->attacking){
+
+                        enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
+
                         if (enemy->CurrentFrame == 7 || enemy->CurrentFrame == 13){
                             enemy->SwordHitBox = (Rectangle) {enemy->position.x,
                                                               enemy->position.y - enemy->CurrentTexture.height + 100,
@@ -876,6 +939,11 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
                         enemy->HitBox = (Rectangle) {enemy->position.x - 50,
                                                      enemy->position.y - 170,
                                                      125, 145};
+                    }
+                    else{
+                        enemy->HitBox = (Rectangle) {enemy->position.x - enemy->FrameWidth/2,
+                                                     enemy->position.y - enemy->CurrentTexture.height + 120,
+                                                     130, 150}; 
                     }
                 }
             }
@@ -888,11 +956,15 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
 
         else{ //^ SOMBRA
             if(enemy->CurrentLife > 0){
-                AnimTheCollector(&enemy, &player);
+                int inAnim = 0;
+                AnimTheCollector(&enemy, &player, &inAnim);
 
-                enemy->HitBox = (Rectangle) {enemy->position.x - 50,
-                                             enemy->position.y - 150,
-                                             100, 150};
+                if (inAnim == 0)
+                    enemy->HitBox = (Rectangle) {enemy->position.x - 50,
+                                                enemy->position.y - 150,
+                                                100, 150};
+                else
+                    enemy->HitBox = (Rectangle) {0, 0, 0, 0};
             }
             else{
                 AnimTheCollectorDeath(&enemy);
@@ -945,7 +1017,7 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
             if (enemy->CurrentLife > 0){
                 AnimGrimm(&enemy, &player); 
                 
-                 enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
+                enemy->SwordHitBox = (Rectangle) {0, 0, 0, 0};
         
                 enemy->HitBox = (Rectangle) {enemy->position.x - 60,
                                              enemy->position.y - 240,
@@ -979,22 +1051,3 @@ void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnem
         } 
     }
 } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//~pronto

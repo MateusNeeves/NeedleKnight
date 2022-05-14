@@ -21,6 +21,8 @@ typedef struct Enemies {
 
     int MaxLife;
     int CurrentLife;
+
+    Sound SoundEffects[6];
 } Enemies;
 
 typedef struct Room {

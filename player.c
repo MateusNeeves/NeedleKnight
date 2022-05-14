@@ -21,11 +21,6 @@
 #define DJumpRightEffect 11
 #define DamageEffect 12
 
-#define AttackSound 0
-#define JumpSound 1
-#define DeathSound 2
-#define WalkSound 3
-
 void CreatePlayer(Player *player){
     player->position = (Vector2){1540, 545};
     player->speed = 0; 
@@ -64,10 +59,10 @@ void CreatePlayer(Player *player){
 
     player->SoundEffects = (Sound *) calloc (4, sizeof(Sound));
 
-    player->SoundEffects[AttackSound] = LoadSound("Assets/EfeitosSonoros/PlayerAttack.wav");
-    player->SoundEffects[JumpSound] = LoadSound("Assets/EfeitosSonoros/PlayerJump.wav");
-    player->SoundEffects[DeathSound] = LoadSound("Assets/EfeitosSonoros/PlayerDeath.wav");
-    player->SoundEffects[WalkSound] = LoadSound("Assets/EfeitosSonoros/PlayerWalk.wav");
+    player->SoundEffects[0] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerAttack.wav");
+    player->SoundEffects[1] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerJump.wav");
+    player->SoundEffects[2] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerDeath.wav");
+    player->SoundEffects[3] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerWalk.wav");
 
 }
 
@@ -80,11 +75,14 @@ void MovePlayer(Player **player, float delta)
         (*player)->speed = -PlayerJumpSpeed;
         (*player)->canJump[0] = false;
         (*player)->CurrentFrame = 0;
+        PlaySound((*player)->SoundEffects[1]);
+
     }
     else if (IsKeyPressed(KEY_SPACE) && (*player)->DoubleJump && !(*player)->canJump[0] && (*player)->canJump[1] && !(*player)->attacking){
         (*player)->speed = -(PlayerJumpSpeed/1.15);
         (*player)->canJump[1] = false;
         (*player)->CurrentFrame = 0;
+        PlaySound((*player)->SoundEffects[1]);
     }
 
     
@@ -165,8 +163,9 @@ void MovePlayer(Player **player, float delta)
     // Animacao de Ataque
 
     if (IsKeyPressed(KEY_Z) && IsKeyUp(KEY_A) && IsKeyUp(KEY_D) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_RIGHT) && 
-            !(*player)->attacking && (*player)->canJump[0])
+        !(*player)->attacking && (*player)->canJump[0])
     {
+        PlaySound((*player)->SoundEffects[0]);
         (*player)->CurrentFrame = 0;
         (*player)->attacking = true;
         if ((*player)->LastSide == Left){

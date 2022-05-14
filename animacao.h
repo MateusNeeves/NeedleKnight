@@ -13,7 +13,7 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
 
 void AnimPlayerDeath(Player *player, float *Timer, Room rooms);
 
-void AnimMossCharger(Enemies **enemy);
+void AnimMossCharger(Enemies **enemy, int CurrentEnemy);
 
 void AnimMossChargerDeath(Enemies **enemy, int **CurrentEnemy, float *Timer2);
 
@@ -21,7 +21,7 @@ void AnimKingsMould(Enemies **enemy, Player **player);
 
 void AnimKingsMouldDeath(Enemies **enemy, int **CurrentEnemy);
 
-void AnimTheCollector(Enemies **enemy, Player **player);
+void AnimTheCollector(Enemies **enemy, Player **player, int *inAnim);
 
 void AnimNightmareKing(Enemies **enemy, Player **player);
 

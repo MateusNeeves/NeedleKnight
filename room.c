@@ -64,6 +64,12 @@ void CreateRooms(Room **rooms){
             (*rooms)[0].enemy[0].CurrentLife = 5;
             (*rooms)[0].enemy[0].Damage = 1;
 
+            (*rooms)[0].enemy[0].SoundEffects[0] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Hit.wav");
+            (*rooms)[0].enemy[0].SoundEffects[1] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Appearing.wav");
+            (*rooms)[0].enemy[0].SoundEffects[2] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Charge.wav");
+            (*rooms)[0].enemy[0].SoundEffects[3] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Disappearing.wav");
+
+
         //^ ENEMY 1
             (*rooms)[0].enemy[1].position = (Vector2) {1650, 945};
             (*rooms)[0].enemy[1].speed = 400.0f;
@@ -91,6 +97,10 @@ void CreateRooms(Room **rooms){
             (*rooms)[0].enemy[1].CurrentLife = 10;
             (*rooms)[0].enemy[1].Damage = 1;
 
+            (*rooms)[0].enemy[1].SoundEffects[0] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Hit.wav");
+            (*rooms)[0].enemy[1].SoundEffects[1] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Appearing.wav");
+            (*rooms)[0].enemy[1].SoundEffects[2] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Charge.wav");
+            (*rooms)[0].enemy[1].SoundEffects[3] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Disappearing.wav");
 
     //^ ROOM 1
 
@@ -148,7 +158,7 @@ void CreateRooms(Room **rooms){
 
         //^ ENEMY 0 
             (*rooms)[2].enemy[0].position = (Vector2) {135, 975};
-            (*rooms)[2].enemy[0].speed = 330.0f;
+            (*rooms)[2].enemy[0].speed = 360.0f;
             (*rooms)[2].enemy[0].attacking = false;
             (*rooms)[2].enemy[0].Invulnerable = false;
 
@@ -171,9 +181,14 @@ void CreateRooms(Room **rooms){
             (*rooms)[2].enemy[0].CurrentFrame = 0;
             (*rooms)[2].enemy[0].LastSide = Right;
 
-            (*rooms)[2].enemy[0].MaxLife = 7;
-            (*rooms)[2].enemy[0].CurrentLife = 1;
+            (*rooms)[2].enemy[0].MaxLife = 10;
+            (*rooms)[2].enemy[0].CurrentLife = 10;
             (*rooms)[2].enemy[0].Damage = 2;
+
+            (*rooms)[2].enemy[0].SoundEffects[0] = LoadSound("Assets/Inimigos/KingsMould/EfeitosSonoros/Hit.wav");
+            (*rooms)[2].enemy[0].SoundEffects[1] = LoadSound("Assets/Inimigos/KingsMould/EfeitosSonoros/WakingUp.wav");
+            (*rooms)[2].enemy[0].SoundEffects[2] = LoadSound("Assets/Inimigos/KingsMould/EfeitosSonoros/Attack.wav");
+
 
         //^ ENEMY 1 
             (*rooms)[2].enemy[1].position = (Vector2) {0, 0};
@@ -194,9 +209,14 @@ void CreateRooms(Room **rooms){
 
             (*rooms)[2].enemy[1].CurrentFrame = 0;
 
-            (*rooms)[2].enemy[1].MaxLife = 10;
-            (*rooms)[2].enemy[1].CurrentLife = 10;
+            (*rooms)[2].enemy[1].MaxLife = 13;
+            (*rooms)[2].enemy[1].CurrentLife = 13;
             (*rooms)[2].enemy[1].Damage = 2;
+
+            (*rooms)[2].enemy[1].SoundEffects[0] = LoadSound("Assets/Inimigos/TheCollector/EfeitosSonoros/Hit.wav"); 
+            (*rooms)[2].enemy[1].SoundEffects[1] = LoadSound("Assets/Inimigos/TheCollector/EfeitosSonoros/Roar.wav");
+            (*rooms)[2].enemy[1].SoundEffects[2] = LoadSound("Assets/Inimigos/TheCollector/EfeitosSonoros/Jump.wav");
+            (*rooms)[2].enemy[1].SoundEffects[3] = LoadSound("Assets/Inimigos/TheCollector/EfeitosSonoros/Death.wav");
 
     //^ ROOM 3
 
@@ -252,8 +272,16 @@ void CreateRooms(Room **rooms){
             (*rooms)[3].enemy[0].LastSide = Right;
 
             (*rooms)[3].enemy[0].MaxLife = 10;
-            (*rooms)[3].enemy[0].CurrentLife = 1;
+            (*rooms)[3].enemy[0].CurrentLife = 10;
             (*rooms)[3].enemy[0].Damage = 2;
+            
+            (*rooms)[3].enemy[0].SoundEffects[0] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Hit.wav"); 
+            (*rooms)[3].enemy[0].SoundEffects[1] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/TeleportIn.wav");
+            (*rooms)[3].enemy[0].SoundEffects[2] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/TeleportOut.wav");
+            (*rooms)[3].enemy[0].SoundEffects[3] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Attack.wav");
+            (*rooms)[3].enemy[0].SoundEffects[4] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Transition.wav");
+
+
 
 
         //^ ENEMY 1 
@@ -279,8 +307,17 @@ void CreateRooms(Room **rooms){
             (*rooms)[3].enemy[1].CurrentFrame = 0;
 
             (*rooms)[3].enemy[1].MaxLife = 10;
-            (*rooms)[3].enemy[1].CurrentLife = 1;
+            (*rooms)[3].enemy[1].CurrentLife = 10;
             (*rooms)[3].enemy[1].Damage = 2;
+
+            (*rooms)[3].enemy[1].SoundEffects[0] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Hit.wav");
+            (*rooms)[3].enemy[1].SoundEffects[1] = LoadSound("Assets/Inimigos/Grimm/EfeitosSonoros/Scream.wav");
+            (*rooms)[3].enemy[1].SoundEffects[2] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/TeleportIn.wav");
+            (*rooms)[3].enemy[1].SoundEffects[3] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/TeleportOut.wav");
+            (*rooms)[3].enemy[1].SoundEffects[4] = LoadSound("Assets/Inimigos/Grimm/EfeitosSonoros/Attack.wav");
+            (*rooms)[3].enemy[1].SoundEffects[5] = LoadSound("Assets/Inimigos/Grimm/EfeitosSonoros/Death.wav");
+
+
 }
 
 void DrawRoom(Room rooms, int Front_Back,Player player){

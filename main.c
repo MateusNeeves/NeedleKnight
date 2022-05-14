@@ -43,7 +43,7 @@ int main(void){
     int LastRoom = 1;
 
     PlaySound(menuInfo.MenuMusic);
-    
+
     while (!WindowShouldClose()){
         
         BeginDrawing();
@@ -101,8 +101,8 @@ int main(void){
                 }
 
                 if (player.CurrentLife > 0){
-                    //DrawRectangleRec(player.HitBox, BLUE);
-                    //DrawRectangleRec(player.SwordHitBox, PURPLE);
+                    DrawRectangleRec(player.HitBox, BLUE);
+                    DrawRectangleRec(player.SwordHitBox, PURPLE);
                     AnimPlayer(&player, &LastMove, &CurrentMove, rooms[CurrentRoom], &Timer);
                 }
                 
@@ -159,25 +159,47 @@ int main(void){
     for(int i = 0 ; i < 4 ; i++)
         UnloadMusicStream(rooms[i].SoundTrack);
 
-    // Room 0
-    for (int i = 0 ; i < 2 ; i++)
-        for(int j = 0 ; j < 6 ; j++)
-            UnloadTexture(rooms[0].enemy[i].Textures[j]);
+    //* Room 0
+        //^ Enemy 0 e 1
+            for (int i = 0 ; i < 2 ; i++){
+                for(int j = 0 ; j < 6 ; j++){
+                    UnloadTexture(rooms[0].enemy[i].Textures[j]); 
+                }
+                for(int j = 0 ; j < 4 ; j++){
+                    UnloadSound(rooms[0].enemy[i].SoundEffects[j]);
+                }
+            }
     
-    // Room 2
-    for (int i = 0 ; i < 8 ; i++)
-        UnloadTexture(rooms[2].enemy[0].Textures[i]);
+    //* Room 2
+        //^ Enemy 0
+            for (int i = 0 ; i < 8 ; i++)
+                UnloadTexture(rooms[2].enemy[0].Textures[i]); 
 
-    for (int i = 0 ; i < 6 ; i++)
-        UnloadTexture(rooms[2].enemy[1].Textures[i]);
+            for (int i = 0 ; i < 3 ; i++)
+                UnloadSound(rooms[2].enemy[0].SoundEffects[i]);
 
-    // Room 3
-    for (int i = 0 ; i < 9 ; i++)
-        UnloadTexture(rooms[0].enemy[0].Textures[i]);
+        //^ Enemy 1
+            for (int i = 0 ; i < 6 ; i++)
+                UnloadTexture(rooms[2].enemy[1].Textures[i]);
 
-    for (int i = 0 ; i < 10 ; i++)
-        UnloadTexture(rooms[0].enemy[1].Textures[i]);
-    
+            for (int i = 0 ; i < 4 ; i++)
+                UnloadSound(rooms[2].enemy[1].SoundEffects[i]);
+
+    //* Room 3
+        //^ Enemy 0
+            for (int i = 0 ; i < 9 ; i++)
+                UnloadTexture(rooms[3].enemy[0].Textures[i]);
+
+            for (int i = 0 ; i < 5 ; i++)
+                UnloadSound(rooms[3].enemy[0].SoundEffects[i]);
+
+        //^ Enemy 1
+            for (int i = 0 ; i < 10 ; i++)
+                UnloadTexture(rooms[3].enemy[1].Textures[i]);
+            
+            for (int i = 0 ; i < 6 ; i++)
+                UnloadSound(rooms[3].enemy[1].SoundEffects[i]);
+
 
     for (int i = 0 ; i < 4 ; i++)
         for (int j = 0 ; j < 2 ; j++)

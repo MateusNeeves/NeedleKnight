@@ -110,6 +110,7 @@ void PlayerAttackColision(Player player, Enemies *enemy){
     if (!enemy->Invulnerable && CheckCollisionRecs(enemy->HitBox , player.SwordHitBox)){
         enemy->CurrentLife -= 1;
         enemy->Invulnerable = true;
+        PlaySound(enemy->SoundEffects[0]);
     }
 
     if (enemy->Invulnerable)
