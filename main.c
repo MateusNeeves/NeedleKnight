@@ -11,7 +11,7 @@
 int main(void){
 
     InitWindow(GetScreenWidth(), GetScreenHeight(), "Needle Knight");
-    //ToggleFullscreen();
+    ToggleFullscreen();
     SetTargetFPS(60);
 
     InitAudioDevice();
@@ -197,8 +197,8 @@ int main(void){
                     AnimPlayerDeath(&player, &Timer, rooms[CurrentRoom]);
                 }
 
-                if(IsKeyDown(KEY_P))  //^Funcao de Desenvolvedor
-                    player.CurrentLife = 10;
+       /*          if(IsKeyDown(KEY_P))  //^Funcao de Desenvolvedor
+                    player.CurrentLife = 10; */
 
                 PlayerAttackColision(player, &rooms[CurrentRoom].enemy[CurrentEnemy]);
 
