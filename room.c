@@ -16,16 +16,17 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[0].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room0.mp3");
         
-        (*rooms)[0].platformNmbr = 7;
+        (*rooms)[0].platformNmbr = 8;
 
-        Rectangle platforms0[7] = {   
+        Rectangle platforms0[8] = {   
             {0, 0, 50, 745},            // Parede Esquerda
             {1880, 0, 36, 1080},       // Parede Direita
             {0, 955, 1920, 126},      // Chao
             {0, 0, 1920, 120},       // Teto
             {570, 730, 190, 40},    // Plataforma Esquerda
             {1160, 730, 190, 40},  // Plataforma Direita
-            {880, 530, 190, 40}   // Plataforma Meio
+            {880, 530, 190, 40},  // Plataforma Meio
+            {0, 730, 50, 288}    // Porta
         };
 
         (*rooms)[0].platforms = (Rectangle*) calloc((*rooms)[0].platformNmbr, sizeof(Rectangle));
@@ -34,6 +35,11 @@ void CreateRooms(Room **rooms){
             (*rooms)[0].platforms[i] = platforms0[i];
 
         (*rooms)[0].enemyNmbr = 2;
+
+        (*rooms)[0].doorsNmbr = 1;
+
+        (*rooms)[0].doors[0].Texture = LoadTexture("Assets/Mapa/Mapa0Porta.png"); 
+        (*rooms)[0].doors[0].position = (Vector2) {0, 730};
 
         //^ ENEMY 0 
 
@@ -112,7 +118,7 @@ void CreateRooms(Room **rooms){
         
         (*rooms)[1].platformNmbr = 9;
 
-        Rectangle platforms1[10] = {
+        Rectangle platforms1[9] = {
             {0, 350, 520, 210},         // Plataforma Cima-Esquerda
             {0, 520, 150, 130},        // Plataforma Cima-Esquerda (Complemento)
             {0, 0, 1920, 100},        //Teto
@@ -121,7 +127,7 @@ void CreateRooms(Room **rooms){
             {780, 550, 215, 40},   // Plataforma Meio-Esquerda
             {1060, 720, 170, 40}, // Plataforma Meio-Direita
             {0, 500, 50, 600},   // Parede Esquerda
-            {1905, 0, 25, 535},  // Parede Direita
+            {1905, 0, 25, 535}  // Parede Direita
         };
 
         (*rooms)[1].platforms = (Rectangle *) calloc((*rooms)[1].platformNmbr, sizeof(Rectangle));
@@ -131,7 +137,6 @@ void CreateRooms(Room **rooms){
         
         (*rooms)[1].enemyNmbr = 0;
 
-
     //^ ROOM 2
 
         (*rooms)[2].texture = LoadTexture("Assets/Mapa/Mapa2.png");
@@ -140,19 +145,29 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[2].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room2.mp3");
 
-        (*rooms)[2].platformNmbr = 4;
+        (*rooms)[2].platformNmbr = 6;
 
-        Rectangle platforms2[4] = {
-            {0, 0, 1920, 130},         // Teto
-            {0, 975, 1920, 110},      // Chao 
-            {0, 135, 50, 655},       // Parede Esquerda
-            {1875,145, 50, 655}     // Parede Direita
+        Rectangle platforms2[6] = {
+            {0, 0, 1920, 130},          // Teto
+            {0, 975, 1920, 110},       // Chao 
+            {0, 135, 50, 655},        // Parede Esquerda
+            {1875, 145, 50, 655},     // Parede Direita
+            {0, 763, 50, 288},      // Porta Esquerda
+            {1875, 763, 50, 288}   // Porta Direita
         };
 
         (*rooms)[2].platforms = (Rectangle *) calloc((*rooms)[2].platformNmbr, sizeof(Rectangle));
 
         for (int i = 0 ; i < (*rooms)[2].platformNmbr ; i++)
             (*rooms)[2].platforms[i] = platforms2[i];
+
+        (*rooms)[2].doorsNmbr = 2;
+
+        (*rooms)[2].doors[0].Texture = LoadTexture("Assets/Mapa/Mapa2PortaE.png"); 
+        (*rooms)[2].doors[0].position = (Vector2) {0, 763};
+
+        (*rooms)[2].doors[1].Texture = LoadTexture("Assets/Mapa/Mapa2PortaD.png"); 
+        (*rooms)[2].doors[1].position = (Vector2) {1837, 763};
 
         (*rooms)[2].enemyNmbr = 2;
 
@@ -273,7 +288,7 @@ void CreateRooms(Room **rooms){
 
             (*rooms)[3].enemy[0].MaxLife = 10;
             (*rooms)[3].enemy[0].CurrentLife = 10;
-            (*rooms)[3].enemy[0].Damage = 2;
+            (*rooms)[3].enemy[0].Damage = 3;
             
             (*rooms)[3].enemy[0].SoundEffects[0] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Hit.wav"); 
             (*rooms)[3].enemy[0].SoundEffects[1] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/TeleportIn.wav");
@@ -306,9 +321,9 @@ void CreateRooms(Room **rooms){
             
             (*rooms)[3].enemy[1].CurrentFrame = 0;
 
-            (*rooms)[3].enemy[1].MaxLife = 10;
-            (*rooms)[3].enemy[1].CurrentLife = 10;
-            (*rooms)[3].enemy[1].Damage = 2;
+            (*rooms)[3].enemy[1].MaxLife = 12;
+            (*rooms)[3].enemy[1].CurrentLife = 12;
+            (*rooms)[3].enemy[1].Damage = 3;
 
             (*rooms)[3].enemy[1].SoundEffects[0] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Hit.wav");
             (*rooms)[3].enemy[1].SoundEffects[1] = LoadSound("Assets/Inimigos/Grimm/EfeitosSonoros/Scream.wav");
@@ -326,29 +341,27 @@ void DrawRoom(Room rooms, int Front_Back,Player player){
         UpdateMusicStream(rooms.SoundTrack);
         PlayMusicStream(rooms.SoundTrack);
     }
-
-    Rectangle fundo = {0 , 0, rooms.texture.width , rooms.texture.height };
-
-    Vector2 posFundo = {0, 0};
                     
     if (Front_Back == 1)
-        DrawTextureRec(rooms.texture, fundo, posFundo, WHITE); 
+        DrawTexture(rooms.texture, 0, 0, WHITE); 
     else
-        DrawTextureRec(rooms.FrontTexture, fundo, posFundo, WHITE);
+        DrawTexture(rooms.FrontTexture, 0, 0, WHITE);
 }
 
-void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *player){
+void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *player, Room *rooms){
     if (player->position.x < 0){ //Porta Esquerda
         *LastRoom = *CurrentRoom;
         *CurrentRoom += 1;
-        *CurrentEnemy = 0;
+
+        if (*CurrentRoom != 1 || *LastRoom != 0)
+            *CurrentEnemy = 0;
 
         if (*LastRoom == 0 && *CurrentRoom == 1){
             player->position = (Vector2) {1850, 945};
         }
 
         if (*LastRoom == 1 && *CurrentRoom == 2){
-            player->position = (Vector2) {1860, 975};
+            player->position = (Vector2) {1900, 975};
         }
 
         if (*LastRoom == 2 && *CurrentRoom == 3){
@@ -359,7 +372,9 @@ void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *pla
     else if (player->position.x > 1920){ // Porta Direita
         *LastRoom = *CurrentRoom;
         *CurrentRoom -= 1;
-        *CurrentEnemy = 0;
+
+        if (*CurrentRoom != 0 && *LastRoom != 1)
+            *CurrentEnemy = 0;
 
         if (*LastRoom == 3 && *CurrentRoom == 2){
             player->position = (Vector2) {50, 975};
@@ -370,7 +385,24 @@ void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *pla
         }
 
         if (*LastRoom == 1 && *CurrentRoom == 0){
-            player->position = (Vector2) {50, 955};
+            player->position = (Vector2) {20, 955};
         }
+    }
+}
+
+void VerifyDoors(Player player, Room *rooms){
+
+    if (rooms->enemy[1].CurrentLife < 1 ){
+        for (int i = 0  ; i < rooms->doorsNmbr ; i++){
+            rooms->platforms[rooms->platformNmbr - i - 1] = (Rectangle) {0, 0, 0, 0};
+        }
+    }
+
+    for (int i = 0 ; i < rooms->doorsNmbr ; i++){
+        if (i == Left && player.position.x  > 60 && rooms[0].enemy[1].CurrentLife > 0)
+                DrawTextureV(rooms->doors[i].Texture, rooms->doors[i].position, WHITE);
+
+        if (i == Right && player.position.x  < 1860 && rooms[0].enemy[1].CurrentLife > 0)
+                DrawTextureV(rooms->doors[i].Texture, rooms->doors[i].position, WHITE);
     }
 }

@@ -83,9 +83,13 @@ void AnimPlayer(Player *player, Texture2D **LastMove, Texture2D **CurrentMove, R
 
     if (*LastMove != *CurrentMove){
         player->CurrentFrame = 0;
-        if (!player->attacking && player->canJump[0])
-            PlaySound(player->SoundEffects[3]);
     }
+
+//^ SOM DE ANDAR
+/*     if (player->Walking)
+        PlaySound(player->SoundEffects[3]);
+    else
+        StopSound(player->SoundEffects[3]); */
 
     if (!player->canJump[1] && player->CurrentFrame < 1){
         if (player->LastSide == Left)
@@ -863,12 +867,14 @@ void AnimGrimmDeath(Enemies **enemy){
 
 void AnimEnemy(Player *player, Enemies *enemy, int CurrentRoom, int *CurrentEnemy){
     static float Timer = 0.0f;
+    static int flag = 0;
 
 
     if (CurrentRoom == 0){ // ^MAPA 0
         Timer += GetFrameTime();
 
-        if (Timer > 2.0f){
+        if (Timer > 2.0f && (player->position.x > 300 || flag == 1)){
+            flag = 1;
             if(enemy->CurrentLife > 0){
                 AnimMossCharger(&enemy, *CurrentEnemy);
                 if(*CurrentEnemy == 0){

@@ -73,8 +73,6 @@ void ColisaoLateral(Player **player, Room rooms, float delta){
         {
             p->x -= PlayerHorzSpeed * delta;
         } 
-
-
     }
 }
 

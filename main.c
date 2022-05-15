@@ -42,40 +42,126 @@ int main(void){
     int CurrentEnemy = 0;
     int LastRoom = 1;
 
+    Font font = LoadFontEx("Assets/HUD/BEECH.ttf", 72, 0, 0);
+    
+    const char MenuTexts[4][50] = {"nome do jogo",
+                                   "start",
+                                   "controls",
+                                   "leave game"};
+
+    Vector2 MenuTextsPos[4] = {{62, 70},
+                           {151, 425},
+                           {110, 515},
+                           {55, 600}};
+
+    const char MenuArrow[] = "X";
+
+    Vector2 MenuArrowPos[3][2] = {{{95, 442}, {335, 442}},
+                                {{60, 533}, {370, 533}},
+                                {{5, 617}, {423, 617}}};
+
+    int MenuArrowNmbr = 0;
+
+
+    const char PauseTexts[3][50] = {"pause", "resume", "menu"};
+
+    Vector2 PauseTextsPos[3] = {{750, 155},
+                                {850, 450},
+                                {880, 570}};
+
+    const char PauseArrow[] = "X";
+
+    Vector2 PauseArrowPos[2][2] = {{{790, 470}, {1097, 470}},
+                                   {{818, 588}, {1070, 588}}};
+
+    int PauseArrowNmbr = 0;
+
+    bool InControl = false;
+
     PlaySound(menuInfo.MenuMusic);
 
-    while (!WindowShouldClose()){
+    int Close = 0;
+
+    while (!Close){
         
         BeginDrawing();
         switch (CurrentScreen){
            
             case MENU:{
+                    AnimMenu(&menuInfo, &Timer);
                 
-                if (IsKeyPressed(KEY_ENTER))
-                {   
-                    StopSound(menuInfo.MenuMusic);
-                    CurrentScreen = GAMEPLAY;
+                if (!InControl){
+                    if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 0)
+                    {   
+                        StopSound(menuInfo.MenuMusic);
+                        CurrentScreen = GAMEPLAY;
+                    }
+
+                    if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 1){
+                        InControl = true;
+                    }
+
+                    if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 2)
+                    {
+                        Close = 1;
+                    }
+
+                    for(int i = 0 ; i < 4 ; i++){
+                        DrawTextEx(font, MenuTexts[i], MenuTextsPos[i], 72, 0, WHITE);
+                    }
+
+                    if (IsKeyPressed(KEY_DOWN))
+                        MenuArrowNmbr++;
+
+                    if (MenuArrowNmbr > 2)
+                        MenuArrowNmbr = 0;
+
+                    if (IsKeyPressed(KEY_UP))
+                        MenuArrowNmbr--;
+
+                    if (MenuArrowNmbr < 0)
+                        MenuArrowNmbr = 2;
+
+                    DrawTextEx(font, MenuArrow, MenuArrowPos[MenuArrowNmbr][0], 44, 0, WHITE);
+                    DrawTextEx(font, MenuArrow, MenuArrowPos[MenuArrowNmbr][1], 44 , 0, WHITE);
+
                 }
 
-                AnimMenu(&menuInfo, &Timer);
+                else{
+                    if (IsKeyPressed(KEY_ESCAPE))
+                        InControl = false;
+                    
+                    DrawTexture(menuInfo.Controls, 0, 0, WHITE);
+                }
+
+
                 break;
             }
             
             case GAMEPLAY:{
                  
-                if (IsKeyPressed(KEY_ENTER))
+                if (IsKeyPressed(KEY_ESCAPE))
                 {
-                    PlaySound(menuInfo.MenuMusic);
-                    CurrentScreen = MENU;
+                    CurrentScreen = PAUSE;
                 }
 
-                VerifyRooms(&CurrentEnemy, &CurrentRoom, &LastRoom, &player);
+                if (player.CurrentLife == 0 && player.CurrentFrame == 3)
+                {
+                    CurrentScreen = GAMEOVER;
+                }
+
+                if (rooms[3].enemy[1].CurrentLife == 0 && rooms[3].enemy[1].CurrentFrame == 5)
+                {
+                    CurrentScreen = CREDITS;
+                }
+
+                VerifyRooms(&CurrentEnemy, &CurrentRoom, &LastRoom, &player, rooms);
 
                 DrawRoom(rooms[CurrentRoom], 1, player); //Printar Atras
 
                 if (rooms[CurrentRoom].enemyNmbr > 0){
-                    DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].SwordHitBox, PURPLE);
-                    DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].HitBox, RED);
+                    //DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].SwordHitBox, PURPLE);
+                    //DrawRectangleRec(rooms[CurrentRoom].enemy[CurrentEnemy].HitBox, RED);
                     AnimEnemy(&player, &rooms[CurrentRoom].enemy[CurrentEnemy], CurrentRoom, &CurrentEnemy);
                 }
 
@@ -101,8 +187,8 @@ int main(void){
                 }
 
                 if (player.CurrentLife > 0){
-                    DrawRectangleRec(player.HitBox, BLUE);
-                    DrawRectangleRec(player.SwordHitBox, PURPLE);
+                    //DrawRectangleRec(player.HitBox, BLUE);
+                    //DrawRectangleRec(player.SwordHitBox, PURPLE);
                     AnimPlayer(&player, &LastMove, &CurrentMove, rooms[CurrentRoom], &Timer);
                 }
                 
@@ -115,7 +201,14 @@ int main(void){
                     player.CurrentLife = 10;
 
                 PlayerAttackColision(player, &rooms[CurrentRoom].enemy[CurrentEnemy]);
-                
+
+                if (CurrentRoom != 1 && rooms[CurrentRoom].enemy[1].CurrentLife < 1 ){
+                    rooms[CurrentRoom].platforms[rooms[CurrentRoom].platformNmbr - 1] = (Rectangle) {0, 0, 0, 0};
+                } 
+
+                if (CurrentRoom != 1 && CurrentRoom != 3)
+                    VerifyDoors(player, &rooms[CurrentRoom]);
+
                 EnemyColision (rooms[CurrentRoom].enemy[CurrentEnemy], &player);
 
                 DrawRoom(rooms[CurrentRoom], 0, player); // Printar na Frente
@@ -129,9 +222,78 @@ int main(void){
                 break;
             }
 
+            case PAUSE:{
+                
+                if (PauseArrowNmbr == 0 && IsKeyPressed(KEY_ENTER))  
+                    CurrentScreen = GAMEPLAY;
+
+                if (PauseArrowNmbr == 1 && IsKeyPressed(KEY_ENTER)){
+                    CurrentScreen = MENU;
+                    PauseArrowNmbr = 0;
+                }
+
+                DrawAll(player, rooms[CurrentRoom], rooms[CurrentRoom].enemy[CurrentEnemy], infoHud);
+
+                DrawTexture(menuInfo.PauseEffect, 0, 0, WHITE);
+
+                DrawTextEx(font, PauseTexts[0], PauseTextsPos[0], 162, 0, WHITE);
+                DrawTextEx(font, PauseTexts[1], PauseTextsPos[1], 72, 0, WHITE);
+                DrawTextEx(font, PauseTexts[2], PauseTextsPos[2], 72, 0, WHITE);
+
+
+                if (IsKeyPressed(KEY_DOWN))
+                    PauseArrowNmbr++;
+
+                if (PauseArrowNmbr > 1)
+                    PauseArrowNmbr = 0;
+
+                if (IsKeyPressed(KEY_UP))
+                    PauseArrowNmbr--;
+
+                if (PauseArrowNmbr < 0)
+                    PauseArrowNmbr = 1;
+
+                DrawTextEx(font, PauseArrow, PauseArrowPos[PauseArrowNmbr][0], 44, 0, WHITE);
+                DrawTextEx(font, PauseArrow, PauseArrowPos[PauseArrowNmbr][1], 44 , 0, WHITE);
+
+                break;
+            }
+
+            case GAMEOVER:{
+                
+                if (IsKeyPressed(KEY_ESCAPE)){  
+                    Close = true;
+                }
+
+                DrawAll(player, rooms[CurrentRoom], rooms[CurrentRoom].enemy[CurrentEnemy], infoHud);
+
+                DrawTexture(menuInfo.PauseEffect, 0, 0, WHITE);
+
+                DrawTexture(menuInfo.GameOver, 0, 0, WHITE);
+
+                break;
+            }
+
+            case CREDITS:{
+                
+                if (IsKeyPressed(KEY_ESCAPE)){   
+                    Close = true;
+                }
+
+                DrawAll(player, rooms[CurrentRoom], rooms[CurrentRoom].enemy[CurrentEnemy], infoHud);
+
+                DrawTexture(menuInfo.PauseEffect, 0, 0, WHITE);
+
+                DrawTexture(menuInfo.Credits, 0, 0, WHITE);
+
+                break;
+            }
+
             default:
                 break;
         }
+
+        
 
         EndDrawing();
     }

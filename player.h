@@ -12,6 +12,7 @@ typedef struct Player {
     bool attacking;
     bool DoubleJump;
     bool Invulnerable;
+    bool Walking;
 
     Texture2D *Textures;
     Texture2D CurrentTexture;

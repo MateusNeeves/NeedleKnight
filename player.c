@@ -26,7 +26,7 @@ void CreatePlayer(Player *player){
     player->speed = 0; 
     player->canJump[0] = true;
     player->canJump[1] = true;
-    player->DoubleJump = true;
+    player->DoubleJump = false;
     player->attacking = false;
     player->Invulnerable = false;
 
@@ -62,8 +62,7 @@ void CreatePlayer(Player *player){
     player->SoundEffects[0] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerAttack.wav");
     player->SoundEffects[1] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerJump.wav");
     player->SoundEffects[2] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerDeath.wav");
-    player->SoundEffects[3] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerWalk.wav");
-
+    //player->SoundEffects[3] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerWalk.wav");
 }
 
 
@@ -76,7 +75,6 @@ void MovePlayer(Player **player, float delta)
         (*player)->canJump[0] = false;
         (*player)->CurrentFrame = 0;
         PlaySound((*player)->SoundEffects[1]);
-
     }
     else if (IsKeyPressed(KEY_SPACE) && (*player)->DoubleJump && !(*player)->canJump[0] && (*player)->canJump[1] && !(*player)->attacking){
         (*player)->speed = -(PlayerJumpSpeed/1.15);
@@ -97,12 +95,15 @@ void MovePlayer(Player **player, float delta)
             (*player)->CurrentTexture = (*player)->Textures[RunLeft];
             (*player)->FrameWidth = (*player)->Textures[RunLeft].width / 8.0;
             (*player)->MaxFrames = (int) ((*player)->Textures[RunLeft].width / (int) (*player)->FrameWidth);
+            (*player)->Walking = true;
         }
 
         else{
             (*player)->CurrentTexture = (*player)->Textures[JumpLeft];
             (*player)->FrameWidth = (*player)->Textures[JumpLeft].width / 9.0;
             (*player)->MaxFrames = (int) ((*player)->Textures[JumpLeft].width / (int) (*player)->FrameWidth);
+            (*player)->Walking = false;
+
         }
     }
 
@@ -117,12 +118,14 @@ void MovePlayer(Player **player, float delta)
             (*player)->CurrentTexture = (*player)->Textures[RunRight];
             (*player)->FrameWidth = (*player)->Textures[RunRight].width / 8.0;
             (*player)->MaxFrames = (int) ((*player)->Textures[RunRight].width / (int) (*player)->FrameWidth);
+            (*player)->Walking = true;
         }
 
         else{
             (*player)->CurrentTexture = (*player)->Textures[JumpRight];
             (*player)->FrameWidth = (*player)->Textures[JumpRight].width / 9.0;
             (*player)->MaxFrames = (int) ((*player)->Textures[JumpRight].width / (int) (*player)->FrameWidth);
+            (*player)->Walking = false;
         }
     }
 
@@ -131,6 +134,7 @@ void MovePlayer(Player **player, float delta)
     if (IsKeyUp(KEY_A) && IsKeyUp(KEY_LEFT) && IsKeyUp(KEY_D) && IsKeyUp(KEY_RIGHT) && !(*player)->attacking)
     {
         PauseSound((*player)->SoundEffects[3]);
+        (*player)->Walking = false;
 
         if ((*player)->canJump[0]){
             if ((*player)->LastSide == Left){
@@ -168,6 +172,7 @@ void MovePlayer(Player **player, float delta)
         PlaySound((*player)->SoundEffects[0]);
         (*player)->CurrentFrame = 0;
         (*player)->attacking = true;
+        (*player)->Walking =  false;
         if ((*player)->LastSide == Left){
             (*player)->CurrentTexture = (*player)->Textures[AttackLeft];
             (*player)->FrameWidth = (*player)->Textures[AttackLeft].width / 3.0;

@@ -4,6 +4,11 @@
 #include "raylib.h"
 #include "player.h"
 
+typedef struct Door{
+    Vector2 position;
+    Texture2D Texture;
+} Door;
+
 typedef struct Enemies {
     Vector2 position;
     Rectangle HitBox;
@@ -33,12 +38,16 @@ typedef struct Room {
     Music SoundTrack;
     Enemies enemy[2];
     int enemyNmbr;
+    Door doors[2];
+    int doorsNmbr;
 } Room;
 
 void CreateRooms(Room **rooms);
 
 void DrawRoom(Room rooms, int Front_Back, Player player);
 
-void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *player);
+void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *player, Room *rooms);
+
+void VerifyDoors(Player player, Room *rooms);
 
 #endif
