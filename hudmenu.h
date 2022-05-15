@@ -33,6 +33,4 @@ void DamageHitEffect(Player player);
 
 void DrawAll(Player player, Room rooms, Enemies enemy, Hud infoHud);
 
-void ResetGame(Player *player, Room **rooms);
-
 #endif

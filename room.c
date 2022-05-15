@@ -14,7 +14,9 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[0].FrontTexture = LoadTexture("Assets/Mapa/Mapa0Frente.png");
 
-        (*rooms)[0].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room0.mp3");
+        (*rooms)[0].SoundTrack = LoadSound("Assets/Musicas/Room0.wav");
+
+        SetSoundVolume((*rooms)[0].SoundTrack, 0.07);
         
         (*rooms)[0].platformNmbr = 8;
 
@@ -75,6 +77,9 @@ void CreateRooms(Room **rooms){
             (*rooms)[0].enemy[0].SoundEffects[2] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Charge.wav");
             (*rooms)[0].enemy[0].SoundEffects[3] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Disappearing.wav");
 
+            for (int i = 0 ; i < 4 ; i++){
+                SetSoundVolume((*rooms)[0].enemy[0].SoundEffects[i], 0.06);
+            }
 
         //^ ENEMY 1
             (*rooms)[0].enemy[1].position = (Vector2) {1650, 945};
@@ -108,13 +113,19 @@ void CreateRooms(Room **rooms){
             (*rooms)[0].enemy[1].SoundEffects[2] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Charge.wav");
             (*rooms)[0].enemy[1].SoundEffects[3] = LoadSound("Assets/Inimigos/MossCharger/EfeitosSonoros/Disappearing.wav");
 
+            for (int i = 0 ; i < 4 ; i++){
+                SetSoundVolume((*rooms)[0].enemy[1].SoundEffects[i], 0.06);
+            }
+
     //^ ROOM 1
 
         (*rooms)[1].texture = LoadTexture("Assets/Mapa/Mapa1.png");
 
         (*rooms)[1].FrontTexture = LoadTexture("Assets/Mapa/Mapa1Frente.png");
 
-        (*rooms)[1].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room1.mp3");
+        (*rooms)[1].SoundTrack = LoadSound("Assets/Musicas/Room1.wav");
+
+        SetSoundVolume((*rooms)[1].SoundTrack, 0.07);
         
         (*rooms)[1].platformNmbr = 9;
 
@@ -143,7 +154,9 @@ void CreateRooms(Room **rooms){
 
         (*rooms)[2].FrontTexture = LoadTexture("Assets/Mapa/Mapa2Frente.png");
 
-        (*rooms)[2].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room2.mp3");
+        (*rooms)[2].SoundTrack = LoadSound("Assets/Musicas/Room2.wav");
+
+        SetSoundVolume((*rooms)[2].SoundTrack, 0.07);
 
         (*rooms)[2].platformNmbr = 6;
 
@@ -204,6 +217,10 @@ void CreateRooms(Room **rooms){
             (*rooms)[2].enemy[0].SoundEffects[1] = LoadSound("Assets/Inimigos/KingsMould/EfeitosSonoros/WakingUp.wav");
             (*rooms)[2].enemy[0].SoundEffects[2] = LoadSound("Assets/Inimigos/KingsMould/EfeitosSonoros/Attack.wav");
 
+            for (int i = 0 ; i < 3 ; i++){
+                SetSoundVolume((*rooms)[2].enemy[0].SoundEffects[i], 0.06);
+            }
+
 
         //^ ENEMY 1 
             (*rooms)[2].enemy[1].position = (Vector2) {0, 0};
@@ -233,13 +250,19 @@ void CreateRooms(Room **rooms){
             (*rooms)[2].enemy[1].SoundEffects[2] = LoadSound("Assets/Inimigos/TheCollector/EfeitosSonoros/Jump.wav");
             (*rooms)[2].enemy[1].SoundEffects[3] = LoadSound("Assets/Inimigos/TheCollector/EfeitosSonoros/Death.wav");
 
+            for (int i = 0 ; i < 4 ; i++){
+                SetSoundVolume((*rooms)[2].enemy[1].SoundEffects[i], 0.06);
+            }
+
     //^ ROOM 3
 
         (*rooms)[3].texture = LoadTexture("Assets/Mapa/Mapa3.png");
 
         (*rooms)[3].FrontTexture = LoadTexture("Assets/Mapa/Mapa3Frente.png");
         
-        (*rooms)[3].SoundTrack = LoadMusicStream("Assets/Musicas/ST-Room3.mp3");
+        (*rooms)[3].SoundTrack = LoadSound("Assets/Musicas/Room3.wav");
+
+        SetSoundVolume((*rooms)[3].SoundTrack, 0.07);
 
         (*rooms)[3].platformNmbr = 7;
 
@@ -296,7 +319,9 @@ void CreateRooms(Room **rooms){
             (*rooms)[3].enemy[0].SoundEffects[3] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Attack.wav");
             (*rooms)[3].enemy[0].SoundEffects[4] = LoadSound("Assets/Inimigos/NightmareKing/EfeitosSonoros/Transition.wav");
 
-
+            for (int i = 0 ; i < 5 ; i++){
+                SetSoundVolume((*rooms)[3].enemy[0].SoundEffects[i], 0.06);
+            }
 
 
         //^ ENEMY 1 
@@ -332,16 +357,12 @@ void CreateRooms(Room **rooms){
             (*rooms)[3].enemy[1].SoundEffects[4] = LoadSound("Assets/Inimigos/Grimm/EfeitosSonoros/Attack.wav");
             (*rooms)[3].enemy[1].SoundEffects[5] = LoadSound("Assets/Inimigos/Grimm/EfeitosSonoros/Death.wav");
 
-
+            for (int i = 0 ; i < 6 ; i++){
+                SetSoundVolume((*rooms)[3].enemy[1].SoundEffects[i], 0.06);
+            }
 }
 
-void DrawRoom(Room rooms, int Front_Back,Player player){
-    if(player.CurrentLife>0)
-    {
-        UpdateMusicStream(rooms.SoundTrack);
-        PlayMusicStream(rooms.SoundTrack);
-    }
-                    
+void DrawRoom(Room rooms, int Front_Back,Player player){                  
     if (Front_Back == 1)
         DrawTexture(rooms.texture, 0, 0, WHITE); 
     else
@@ -349,6 +370,13 @@ void DrawRoom(Room rooms, int Front_Back,Player player){
 }
 
 void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *player, Room *rooms){
+    static int flag = 0;
+
+    if (*CurrentRoom == *LastRoom && flag == 0){
+        PlaySound(rooms[1].SoundTrack);
+        flag = 1;
+    }
+
     if (player->position.x < 0){ //Porta Esquerda
         *LastRoom = *CurrentRoom;
         *CurrentRoom += 1;
@@ -358,14 +386,20 @@ void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *pla
 
         if (*LastRoom == 0 && *CurrentRoom == 1){
             player->position = (Vector2) {1850, 945};
+            PauseSound(rooms[0].SoundTrack);
+            PlaySound(rooms[1].SoundTrack);
         }
 
         if (*LastRoom == 1 && *CurrentRoom == 2){
             player->position = (Vector2) {1900, 975};
+            PauseSound(rooms[1].SoundTrack);
+            PlaySound(rooms[2].SoundTrack);
         }
 
         if (*LastRoom == 2 && *CurrentRoom == 3){
             player->position = (Vector2) {1880, 310};
+            PauseSound(rooms[2].SoundTrack);
+            PlaySound(rooms[3].SoundTrack);
         }
     }
 
@@ -378,16 +412,23 @@ void VerifyRooms(int *CurrentEnemy, int *CurrentRoom, int *LastRoom, Player *pla
 
         if (*LastRoom == 3 && *CurrentRoom == 2){
             player->position = (Vector2) {50, 975};
+            PauseSound(rooms[3].SoundTrack);
+            PlaySound(rooms[2].SoundTrack);
         }
 
         if (*LastRoom == 2 && *CurrentRoom == 1){
             player->position = (Vector2) {60, 350};
+            PauseSound(rooms[2].SoundTrack);
+            PlaySound(rooms[1].SoundTrack);
         }
 
         if (*LastRoom == 1 && *CurrentRoom == 0){
             player->position = (Vector2) {20, 955};
+            PauseSound(rooms[1].SoundTrack);
+            PlaySound(rooms[0].SoundTrack);
         }
     }
+
 }
 
 void VerifyDoors(Player player, Room *rooms){

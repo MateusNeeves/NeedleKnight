@@ -35,7 +35,7 @@ typedef struct Room {
     Texture2D FrontTexture;
     Rectangle *platforms;
     int platformNmbr;
-    Music SoundTrack;
+    Sound SoundTrack;
     Enemies enemy[2];
     int enemyNmbr;
     Door doors[2];

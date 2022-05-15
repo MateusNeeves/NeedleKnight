@@ -10,7 +10,7 @@
 
 int main(void){
 
-    InitWindow(GetScreenWidth(), GetScreenHeight(), "GAMEZIN");
+    InitWindow(GetScreenWidth(), GetScreenHeight(), "Needle Knight");
     //ToggleFullscreen();
     SetTargetFPS(60);
 
@@ -22,9 +22,6 @@ int main(void){
     Room *rooms = NULL;
     rooms= (Room*) realloc(rooms, 4*sizeof(Room));
     CreateRooms(&rooms);
-
-    for(int i = 0; i < 4; i++)
-        SetMusicVolume(rooms[i].SoundTrack, 0.07); 
 
     Texture2D *LastMove, *CurrentMove;
     float Timer = 0.0f;
@@ -44,15 +41,17 @@ int main(void){
 
     Font font = LoadFontEx("Assets/HUD/BEECH.ttf", 72, 0, 0);
     
-    const char MenuTexts[4][50] = {"nome do jogo",
+    const char MenuTexts[5][50] = {"needle",
+                                   "knight",
                                    "start",
                                    "controls",
                                    "leave game"};
 
-    Vector2 MenuTextsPos[4] = {{62, 70},
-                           {151, 425},
-                           {110, 515},
-                           {55, 600}};
+    Vector2 MenuTextsPos[5] = {{90, 70},
+                               {90, 135},
+                               {151, 425},
+                               {110, 515},
+                               {55, 600}};
 
     const char MenuArrow[] = "X";
 
@@ -77,8 +76,6 @@ int main(void){
     int PauseArrowNmbr = 0;
 
     bool InControl = false;
-
-    PlaySound(menuInfo.MenuMusic);
 
     int Close = 0;
 
@@ -106,7 +103,11 @@ int main(void){
                         Close = 1;
                     }
 
-                    for(int i = 0 ; i < 4 ; i++){
+                    for(int i = 0 ; i < 2 ; i++){
+                        DrawTextEx(font, MenuTexts[i], MenuTextsPos[i], 90, 0, WHITE);
+                    }
+
+                    for(int i = 2 ; i < 5 ; i++){
                         DrawTextEx(font, MenuTexts[i], MenuTextsPos[i], 72, 0, WHITE);
                     }
 
@@ -145,7 +146,7 @@ int main(void){
                     CurrentScreen = PAUSE;
                 }
 
-                if (player.CurrentLife == 0 && player.CurrentFrame == 3)
+                if (player.CurrentLife <= 0 && player.CurrentFrame >= 3)
                 {
                     CurrentScreen = GAMEOVER;
                 }
@@ -192,8 +193,7 @@ int main(void){
                     AnimPlayer(&player, &LastMove, &CurrentMove, rooms[CurrentRoom], &Timer);
                 }
                 
-                else
-                {
+                else{
                     AnimPlayerDeath(&player, &Timer, rooms[CurrentRoom]);
                 }
 
@@ -224,13 +224,17 @@ int main(void){
 
             case PAUSE:{
                 
-                if (PauseArrowNmbr == 0 && IsKeyPressed(KEY_ENTER))  
+                if (PauseArrowNmbr == 0 && IsKeyPressed(KEY_ENTER))  {
                     CurrentScreen = GAMEPLAY;
+                    SetSoundVolume(rooms[CurrentRoom].SoundTrack, 0.07);
+                }
 
                 if (PauseArrowNmbr == 1 && IsKeyPressed(KEY_ENTER)){
                     CurrentScreen = MENU;
                     PauseArrowNmbr = 0;
                 }
+
+                SetSoundVolume(rooms[CurrentRoom].SoundTrack, 0.04);
 
                 DrawAll(player, rooms[CurrentRoom], rooms[CurrentRoom].enemy[CurrentEnemy], infoHud);
 
@@ -298,41 +302,61 @@ int main(void){
         EndDrawing();
     }
     
-    //Player
+//& UNLOAD 
+
+  //! Player
     for (int i = 0 ; i < 13 ; i++)
         UnloadTexture(player.Textures[i]);
 
     free(player.Textures);
 
-    for (int i = 0 ; i < 4 ; i++)
+    for (int i = 0 ; i < 3 ; i++)
         UnloadSound(player.SoundEffects[i]);
 
     free(player.SoundEffects);
 
 
-    //Rooms
-
-    for (int i = 0 ; i < 4 ; i++){
-        UnloadTexture(rooms[i].texture);
-        UnloadTexture(rooms[i].FrontTexture);
-        free(rooms[i].platforms);
-    }
-
-    for(int i = 0 ; i < 4 ; i++)
-        UnloadMusicStream(rooms[i].SoundTrack);
+  //! Rooms
 
     //* Room 0
-        //^ Enemy 0 e 1
-            for (int i = 0 ; i < 2 ; i++){
-                for(int j = 0 ; j < 6 ; j++){
-                    UnloadTexture(rooms[0].enemy[i].Textures[j]); 
-                }
-                for(int j = 0 ; j < 4 ; j++){
-                    UnloadSound(rooms[0].enemy[i].SoundEffects[j]);
-                }
-            }
+        UnloadTexture(rooms[0].texture);
+        UnloadTexture(rooms[0].FrontTexture);
+        UnloadSound(rooms[0].SoundTrack);
+        UnloadTexture(rooms[0].doors[0].Texture);
+
+        //^ Enemy 0
+
+            for(int i = 0 ; i < 6 ; i++)
+                UnloadTexture(rooms[0].enemy[0].Textures[i]); 
+
+            for(int i = 0 ; i < 4 ; i++)
+                UnloadSound(rooms[0].enemy[0].SoundEffects[i]); 
+            
+        //^ Enemy 1
+
+            for(int i = 0 ; i < 6 ; i++)
+                UnloadTexture(rooms[0].enemy[1].Textures[i]); 
+
+            for(int i = 0 ; i < 4 ; i++)
+                UnloadSound(rooms[0].enemy[1].SoundEffects[i]); 
+            
+        free(rooms[0].enemy[0].Textures);
+        free(rooms[0].enemy[1].Textures);
+        free(rooms[0].platforms);
+
+
+    //* Room 1
+        UnloadTexture(rooms[1].texture);
+        UnloadTexture(rooms[1].FrontTexture);
+        UnloadSound(rooms[1].SoundTrack);
     
     //* Room 2
+        UnloadTexture(rooms[2].texture);
+        UnloadTexture(rooms[2].FrontTexture);
+        UnloadSound(rooms[2].SoundTrack);
+        UnloadTexture(rooms[2].doors[0].Texture);
+        UnloadTexture(rooms[2].doors[1].Texture);
+
         //^ Enemy 0
             for (int i = 0 ; i < 8 ; i++)
                 UnloadTexture(rooms[2].enemy[0].Textures[i]); 
@@ -347,7 +371,15 @@ int main(void){
             for (int i = 0 ; i < 4 ; i++)
                 UnloadSound(rooms[2].enemy[1].SoundEffects[i]);
 
+        free(rooms[2].enemy[0].Textures);
+        free(rooms[2].enemy[1].Textures);
+        free(rooms[2].platforms);
+
     //* Room 3
+        UnloadTexture(rooms[3].texture);
+        UnloadTexture(rooms[3].FrontTexture);
+        UnloadSound(rooms[3].SoundTrack);
+
         //^ Enemy 0
             for (int i = 0 ; i < 9 ; i++)
                 UnloadTexture(rooms[3].enemy[0].Textures[i]);
@@ -361,19 +393,22 @@ int main(void){
             
             for (int i = 0 ; i < 6 ; i++)
                 UnloadSound(rooms[3].enemy[1].SoundEffects[i]);
-
-
-    for (int i = 0 ; i < 4 ; i++)
-        for (int j = 0 ; j < 2 ; j++)
-            free(rooms[i].enemy[j].Textures);
-
+        
+        free(rooms[3].enemy[0].Textures);
+        free(rooms[3].enemy[1].Textures);
+        free(rooms[3].platforms);
 
     free(rooms); 
     
-    //Menu-Hud
+  //! Menu-Hud
     UnloadTexture(menuInfo.Texture);
     UnloadTexture(infoHud.TexturePLife);
     UnloadSound(menuInfo.MenuMusic);
+
+    UnloadTexture(menuInfo.PauseEffect);
+    UnloadTexture(menuInfo.Controls);
+    UnloadTexture(menuInfo.GameOver);
+    UnloadTexture(menuInfo.Credits);
 
 
     CloseAudioDevice();

@@ -10,7 +10,11 @@ void CreateMenuInfo(Menu *menuInfo){
 
     menuInfo->CurrentFrame = 1;
 
-    menuInfo->MenuMusic = LoadSound("Assets/Musicas/MenuMusic.mp3");
+    menuInfo->MenuMusic = LoadSound("Assets/Musicas/MenuMusic.wav");
+
+    SetSoundVolume(menuInfo->MenuMusic, 0.09);
+
+    PlaySound(menuInfo->MenuMusic);
 
     menuInfo->PauseEffect = LoadTexture("Assets/HUD/PauseEffect.png");
 
@@ -127,70 +131,4 @@ void DrawAll(Player player, Room rooms, Enemies enemy, Hud infoHud){
 
         counter += infoHud.TexturePLife.width/3;
     }
-}
-
-void ResetGame(Player *player, Room **rooms){
-    
-    for (int i = 0 ; i < 4 ; i++){
-        UnloadTexture(rooms[i]->texture);
-        UnloadTexture(rooms[i]->FrontTexture);
-        free(rooms[i]->platforms);
-    }
-
-    for(int i = 0 ; i < 4 ; i++)
-        UnloadMusicStream(rooms[i]->SoundTrack);
-
-    //* Room 0
-        //^ Enemy 0 e 1
-            for (int i = 0 ; i < 2 ; i++){
-                for(int j = 0 ; j < 6 ; j++){
-                    UnloadTexture(rooms[0]->enemy[i].Textures[j]); 
-                }
-                for(int j = 0 ; j < 4 ; j++){
-                    UnloadSound(rooms[0]->enemy[i].SoundEffects[j]);
-                }
-            }
-    
-    //* Room 2
-        //^ Enemy 0
-            for (int i = 0 ; i < 8 ; i++)
-                UnloadTexture(rooms[2]->enemy[0].Textures[i]); 
-
-            for (int i = 0 ; i < 3 ; i++)
-                UnloadSound(rooms[2]->enemy[0].SoundEffects[i]);
-
-        //^ Enemy 1
-            for (int i = 0 ; i < 6 ; i++)
-                UnloadTexture(rooms[2]->enemy[1].Textures[i]);
-
-            for (int i = 0 ; i < 4 ; i++)
-                UnloadSound(rooms[2]->enemy[1].SoundEffects[i]);
-
-    //* Room 3
-        //^ Enemy 0
-            for (int i = 0 ; i < 9 ; i++)
-                UnloadTexture(rooms[3]->enemy[0].Textures[i]);
-
-            for (int i = 0 ; i < 5 ; i++)
-                UnloadSound(rooms[3]->enemy[0].SoundEffects[i]);
-
-        //^ Enemy 1
-            for (int i = 0 ; i < 10 ; i++)
-                UnloadTexture(rooms[3]->enemy[1].Textures[i]);
-            
-            for (int i = 0 ; i < 6 ; i++)
-                UnloadSound(rooms[3]->enemy[1].SoundEffects[i]);
-
-
-    for (int i = 0 ; i < 4 ; i++)
-        for (int j = 0 ; j < 2 ; j++)
-            free(rooms[i]->enemy[j].Textures);
-    
-    //Menu-Hud
-
-    CreatePlayer(player);
-
-    CreateRooms(rooms);
-
-    
 }

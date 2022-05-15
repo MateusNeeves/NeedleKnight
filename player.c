@@ -63,6 +63,9 @@ void CreatePlayer(Player *player){
     player->SoundEffects[1] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerJump.wav");
     player->SoundEffects[2] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerDeath.wav");
     //player->SoundEffects[3] = LoadSound("Assets/Personagem/EfeitosSonoros/PlayerWalk.wav");
+
+    for (int i = 0 ; i < 3 ; i++)
+        SetSoundVolume(player->SoundEffects[i], 0.06);
 }
 
 
