@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "player.h": "c",
+        "raylib.h": "c",
+        "colision.h": "c",
+        "stdio.h": "c",
+        "room.h": "c",
+        "stdlib.h": "c",
+        "menu.h": "c",
+        "animacao.h": "c",
+        "hud.h": "c",
+        "enemies.h": "c",
+        "hudmenu.h": "c",
+        "string.h": "c"
+    }
+}
