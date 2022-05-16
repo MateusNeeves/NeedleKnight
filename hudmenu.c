@@ -24,6 +24,9 @@ void CreateMenuInfo(Menu *menuInfo){
 
     menuInfo->Credits = LoadTexture("Assets/HUD/Credits.png");
 
+    menuInfo->Resolution = LoadTexture("Assets/HUD/WrongResolution.png");
+
+
 }
 
 void CreateHud(Hud *infoHud){

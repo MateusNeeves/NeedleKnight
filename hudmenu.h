@@ -21,6 +21,7 @@ typedef struct Menu{
     Texture2D Controls;
     Texture2D GameOver;
     Texture2D Credits;
+    Texture2D Resolution;
 } Menu;
 
 void CreateMenuInfo(Menu *menuInfo);

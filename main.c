@@ -11,6 +11,7 @@
 int main(void){
 
     InitWindow(GetScreenWidth(), GetScreenHeight(), "Needle Knight");
+
     ToggleFullscreen();
     SetTargetFPS(60);
 
@@ -85,54 +86,63 @@ int main(void){
         switch (CurrentScreen){
            
             case MENU:{
-                    AnimMenu(&menuInfo, &Timer);
-                
-                if (!InControl){
-                    if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 0)
-                    {   
-                        StopSound(menuInfo.MenuMusic);
-                        CurrentScreen = GAMEPLAY;
-                    }
 
-                    if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 1){
-                        InControl = true;
-                    }
-
-                    if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 2)
-                    {
+                if (GetScreenWidth() != 1920 || GetScreenHeight() != 1080){
+                    if (IsKeyPressed(KEY_ESCAPE))
                         Close = 1;
-                    }
-
-                    for(int i = 0 ; i < 2 ; i++){
-                        DrawTextEx(font, MenuTexts[i], MenuTextsPos[i], 90, 0, WHITE);
-                    }
-
-                    for(int i = 2 ; i < 5 ; i++){
-                        DrawTextEx(font, MenuTexts[i], MenuTextsPos[i], 72, 0, WHITE);
-                    }
-
-                    if (IsKeyPressed(KEY_DOWN))
-                        MenuArrowNmbr++;
-
-                    if (MenuArrowNmbr > 2)
-                        MenuArrowNmbr = 0;
-
-                    if (IsKeyPressed(KEY_UP))
-                        MenuArrowNmbr--;
-
-                    if (MenuArrowNmbr < 0)
-                        MenuArrowNmbr = 2;
-
-                    DrawTextEx(font, MenuArrow, MenuArrowPos[MenuArrowNmbr][0], 44, 0, WHITE);
-                    DrawTextEx(font, MenuArrow, MenuArrowPos[MenuArrowNmbr][1], 44 , 0, WHITE);
-
+                    DrawTexture(menuInfo.Resolution, 0, 0, WHITE);           
                 }
 
                 else{
-                    if (IsKeyPressed(KEY_ESCAPE))
-                        InControl = false;
-                    
-                    DrawTexture(menuInfo.Controls, 0, 0, WHITE);
+                    AnimMenu(&menuInfo, &Timer);
+                
+                    if (!InControl){
+                        if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 0)
+                        {   
+                            StopSound(menuInfo.MenuMusic);
+                            CurrentScreen = GAMEPLAY;
+                        }
+
+                        if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 1){
+                            InControl = true;
+                        }
+
+                        if (IsKeyPressed(KEY_ENTER) && MenuArrowNmbr == 2)
+                        {
+                            Close = 1;
+                        }
+
+                        for(int i = 0 ; i < 2 ; i++){
+                            DrawTextEx(font, MenuTexts[i], MenuTextsPos[i], 90, 0, WHITE);
+                        }
+
+                        for(int i = 2 ; i < 5 ; i++){
+                            DrawTextEx(font, MenuTexts[i], MenuTextsPos[i], 72, 0, WHITE);
+                        }
+
+                        if (IsKeyPressed(KEY_DOWN))
+                            MenuArrowNmbr++;
+
+                        if (MenuArrowNmbr > 2)
+                            MenuArrowNmbr = 0;
+
+                        if (IsKeyPressed(KEY_UP))
+                            MenuArrowNmbr--;
+
+                        if (MenuArrowNmbr < 0)
+                            MenuArrowNmbr = 2;
+
+                        DrawTextEx(font, MenuArrow, MenuArrowPos[MenuArrowNmbr][0], 44, 0, WHITE);
+                        DrawTextEx(font, MenuArrow, MenuArrowPos[MenuArrowNmbr][1], 44 , 0, WHITE);
+
+                    }
+
+                    else{
+                        if (IsKeyPressed(KEY_ESCAPE))
+                            InControl = false;
+                        
+                        DrawTexture(menuInfo.Controls, 0, 0, WHITE);
+                    }
                 }
 
 
